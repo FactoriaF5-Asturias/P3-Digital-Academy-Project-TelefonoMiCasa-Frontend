@@ -12,15 +12,7 @@ The platform offers quick access to the developers' Github profiles via icons.
 
 This application aims to provide a friendly, intuitive, and efficient experience for both users and administrators/agents.
 
-## Authors
 
-- [@AntonellaEL](https://github.com/AntonellaEL)
-- [@hugoperez11](https://github.com/hugoperez11)
-- [@eyadcode4](https://github.com/eyadcode4)
-- [@jorgecas71](https://github.com/Jorgecas71)
-- [@JuliaParra](https://github.com/JuliaParra)
-- [@piperiver97](https://github.com/piperiver97?tab=repositories)
-- [@pablosja](https://github.com/pablosja)
 
 ## :hammer_and_wrench: Skills
 
@@ -67,3 +59,13 @@ npm run build
 ```sh
 npm run test:unit
 ```
+
+## Authors
+
+- [@AntonellaEL](https://github.com/AntonellaEL)
+- [@hugoperez11](https://github.com/hugoperez11)
+- [@eyadcode4](https://github.com/eyadcode4)
+- [@jorgecas71](https://github.com/Jorgecas71)
+- [@JuliaParra](https://github.com/JuliaParra)
+- [@piperiver97](https://github.com/piperiver97?tab=repositories)
+- [@pablosja](https://github.com/pablosja)
