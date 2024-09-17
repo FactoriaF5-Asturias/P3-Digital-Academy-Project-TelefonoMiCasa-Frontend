@@ -19,12 +19,14 @@ export default {
     },
     submitLogin() {
       console.log('Login with:', this.loginUser, this.loginPassword);
+      this.$router.push('adminview');
     },
     submitRegister() {
       console.log('Register with:', this.registerUsername, this.registerPassword, this.registerConfirmPassword);
     }
   }
 };
+
 </script>
 
 <template>
@@ -108,6 +110,7 @@ export default {
   align-items: center;
   min-height: 100vh;
   background-color: var(--main-bg-color);
+  width: 350px;
 }
 
 .login-box {
