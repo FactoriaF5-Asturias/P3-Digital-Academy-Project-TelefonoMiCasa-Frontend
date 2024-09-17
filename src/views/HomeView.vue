@@ -1,9 +1,11 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+
+import SearchBuy from '@/components/SearchBuy.vue';
+
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+
+      <SearchBuy />
+  
 </template>
