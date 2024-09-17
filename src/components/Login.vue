@@ -5,9 +5,9 @@ export default {
       currentTab: 'login',
       loginEmail: '',
       loginPassword: '',
-      registerName: '',
-      registerEmail: '',
-      registerPassword: ''
+      registerUsername: '',
+      registerPassword: '',
+      registerConfirmPassword: ''
     };
   },
   methods: {
@@ -18,13 +18,15 @@ export default {
       return this.currentTab === tab;
     },
     submitLogin() {
-      console.log('Login with:', this.loginEmail, this.loginPassword);
+      console.log('Login with:', this.loginUser, this.loginPassword);
+      this.$router.push('adminview');
     },
     submitRegister() {
-      console.log('Register with:', this.registerName, this.registerEmail, this.registerPassword);
+      console.log('Register with:', this.registerUsername, this.registerPassword, this.registerConfirmPassword);
     }
   }
 };
+
 </script>
 
 <template>
@@ -48,7 +50,7 @@ export default {
           <form @submit.prevent="submitLogin">
             <div class="form-outline mb-4">
               <label class="form-label" for="loginName">Usuario</label>
-              <input type="email" v-model="loginEmail" id="loginName" class="form-control" />
+              <input type="user" v-model="loginName" id="loginName" class="form-control" />
             </div>
 
             <div class="form-outline mb-4">
@@ -56,20 +58,17 @@ export default {
               <input type="password" v-model="loginPassword" id="loginPassword" class="form-control" />
             </div>
 
-            <button type="submit" id="botonAcceder" class="btn btn-block mb-4">Acceder</button>
+            <div class="button-container">
+              <button type="submit" id="botonAcceder" class="btn btn-block mb-4">Acceder</button>
+            </div>
           </form>
         </div>
 
         <div class="tab-pane fade" :class="{ 'show active': isActiveTab('register') }" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
           <form @submit.prevent="submitRegister">
             <div class="form-outline mb-4">
-              <label class="form-label" for="registerName">Nombre</label>
-              <input type="text" v-model="registerName" id="registerName" class="form-control" />
-            </div>
-
-            <div class="form-outline mb-4">
-              <label class="form-label" for="registerEmail">Correo</label>
-              <input type="email" v-model="registerEmail" id="registerEmail" class="form-control" />
+              <label class="form-label" for="registerUsername">Usuario</label>
+              <input type="text" v-model="registerUsername" id="registerUsername" class="form-control" />
             </div>
 
             <div class="form-outline mb-4">
@@ -77,7 +76,14 @@ export default {
               <input type="password" v-model="registerPassword" id="registerPassword" class="form-control" />
             </div>
 
-            <button type="submit" id="botonRegistrar" class="btn btn-block mb-4">Registrar</button>
+            <div class="form-outline mb-4">
+              <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña</label>
+              <input type="password" v-model="registerConfirmPassword" id="registerConfirmPassword" class="form-control" />
+            </div>
+
+            <div class="button-container">
+              <button type="submit" id="botonRegistrar" class="btn btn-block mb-4">Registrar</button>
+            </div>
           </form>
         </div>
       </div>
@@ -88,58 +94,67 @@ export default {
 <style scoped>
 /* Variables CSS globales */
 :root {
-    --main-bg-color: #f9f9f9;
-    --border-color: #ccc;
-    --button-color: #650000;
-    --button-text-color: white;
-    --active-tab-bg: #650000;
-    --active-tab-color: white;
-    --inactive-tab-bg: #e0e0e0;
-    --inactive-tab-color: black;
-  }
-  
-  .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: var(--main-bg-color);
-  }
-  
-  .login-box {
-    
-    background-color: #D9D9D9;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 400px;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: "Jomolhari", serif;
-    color: #650000;
-    
-  }
-  
-  #botonAcceder, #botonRegistrar {
+  --main-bg-color: #f9f9f9;
+  --border-color: #ccc;
+  --button-color: #650000;
+  --button-text-color: white;
+  --active-tab-bg: #650000;
+  --active-tab-color: white;
+  --inactive-tab-bg: #e0e0e0;
+  --inactive-tab-color: black;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--main-bg-color);
+  width: 350px;
+}
+
+.login-box {
+  background-color: #D9D9D9;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Jomolhari", serif;
+  color: #650000;
+}
+
+#botonAcceder, #botonRegistrar {
   background-color: #650000;
   color: white;
   font-weight: bold;
+  width: 40%;
 }
-  
- .nav-link {
-   background-color: #c25e5e;
+
+.nav-link {
+  background-color: #c25e5e;
   color: #3d0101;
   font-weight: bold;
+  margin-bottom: 40px;
 }
-  
+
 .nav-link.active {
   background-color: #650000;
   color: white;
 }
-  
-  .login {
-    font-family: "Jomolhari", serif;
-  }
 
-  
+.form-control {
+  border: solid 1px;
+  border-color: #650000;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.login-box label{
+  text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.50);
+}
 </style>
