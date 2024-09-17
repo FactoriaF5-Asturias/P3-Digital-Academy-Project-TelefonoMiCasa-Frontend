@@ -5,9 +5,9 @@ export default {
       currentTab: 'login',
       loginEmail: '',
       loginPassword: '',
-      registerName: '',
-      registerEmail: '',
-      registerPassword: ''
+      registerUsername: '',
+      registerPassword: '',
+      registerConfirmPassword: ''
     };
   },
   methods: {
@@ -18,10 +18,10 @@ export default {
       return this.currentTab === tab;
     },
     submitLogin() {
-      console.log('Login with:', this.loginEmail, this.loginPassword);
+      console.log('Login with:', this.loginUser, this.loginPassword);
     },
     submitRegister() {
-      console.log('Register with:', this.registerName, this.registerEmail, this.registerPassword);
+      console.log('Register with:', this.registerUsername, this.registerPassword, this.registerConfirmPassword);
     }
   }
 };
@@ -48,7 +48,7 @@ export default {
           <form @submit.prevent="submitLogin">
             <div class="form-outline mb-4">
               <label class="form-label" for="loginName">Usuario</label>
-              <input type="email" v-model="loginEmail" id="loginName" class="form-control" />
+              <input type="user" v-model="loginName" id="loginName" class="form-control" />
             </div>
 
             <div class="form-outline mb-4">
@@ -65,18 +65,18 @@ export default {
         <div class="tab-pane fade" :class="{ 'show active': isActiveTab('register') }" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
           <form @submit.prevent="submitRegister">
             <div class="form-outline mb-4">
-              <label class="form-label" for="registerName">Nombre</label>
-              <input type="text" v-model="registerName" id="registerName" class="form-control" />
-            </div>
-
-            <div class="form-outline mb-4">
-              <label class="form-label" for="registerEmail">Correo</label>
-              <input type="email" v-model="registerEmail" id="registerEmail" class="form-control" />
+              <label class="form-label" for="registerUsername">Usuario</label>
+              <input type="text" v-model="registerUsername" id="registerUsername" class="form-control" />
             </div>
 
             <div class="form-outline mb-4">
               <label class="form-label" for="registerPassword">Contraseña</label>
               <input type="password" v-model="registerPassword" id="registerPassword" class="form-control" />
+            </div>
+
+            <div class="form-outline mb-4">
+              <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña</label>
+              <input type="password" v-model="registerConfirmPassword" id="registerConfirmPassword" class="form-control" />
             </div>
 
             <div class="button-container">
@@ -151,7 +151,6 @@ export default {
   justify-content: center;
   margin-bottom: 30px;
 }
-/* Nuevo estilo para el efecto de sombra en los textos */
 .login-box label{
   text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.50);
 }
