@@ -6,7 +6,7 @@ import SearchBuy from '@/components/SearchBuy.vue';
 
 <template>
       <div class="text">
-            <h1>¡No necesitas de una bici voladora para encontrar tu hogar</h1>
+            <h1>¡No necesitas de una bici voladora para encontrar tu hogar!</h1>
             <h1>Descubre tu casa ideal en Asturias.</h1>
       </div>
 
@@ -20,17 +20,21 @@ body {
 }
 
 .text {
-font-family: "Jomolhari", serif;
+      position: absolute;
+      padding-top: 200px;
+      padding-left: 250px;
+      font-family: "Jomolhari", serif;
       color: #650000;
-      font-size: 2vh;
       text-shadow:
             1px 1px 2px rgba(0, 0, 0, 0.5),
             -1px 1px 2px rgba(0, 0, 0, 0.5),
             1px -1px 2px rgba(0, 0, 0, 0.5),
             -1px -1px 2px rgba(0, 0, 0, 0.5);
-      text-align: center;
-    
-}
 
+      text-align: center;
+}
+h1 {
+font-size: 6vh;
+}
 
 </style>
