@@ -2,195 +2,214 @@
 export default {
   data() {
     return {
-      property: {
-        house: '/src/assets/icons/dddaaa.jpg',
-        price: '300€ / mes',
-        description: 'REMAX VETUSTA presenta en exclusiva este espacioso piso de 90 m² construidos en Lugones, con plaza de garaje y trastero incluidos en el ...',
-        address: 'Calle Arroyo Vaqueros, 8, Corredoría',
-        bedrooms: 2,
-        elevator: 'ascensor',
-        floor: '3ª planta',
-        bathrooms: 1,
-        area: '87',
-      },
+      properties: [
+        {
+          house: '', //aqui ira la imagen de la vivienda
+          price: '', 
+          description: '',
+          address: '',
+          bedrooms: '',
+          elevator: '',
+          floor: '',
+          bathrooms: '',
+          area: '',
+        },
+        {
+          house: '',
+          price: '',
+          description: '',
+          address: '',
+          bedrooms: '',
+          elevator: '',
+          floor: '',
+          bathrooms: '',
+          area: '',
+        },
+        {
+          house: '',
+          price: '',
+          description: '',
+          address: '',
+          bedrooms: '',
+          elevator: '',
+          floor: '',
+          bathrooms: '',
+          area: '',
+        },
+      ],
       bedroomIcon: '/src/assets/icons/cama.svg',
       elevatorIcon: '/src/assets/icons/asscensor.svg',
       floorIcon: '/src/assets/icons/Building.svg',
-      bathroomIcon: '/src/assets/icons/bañera.svg',
+      bathroomIcon: '/src/assets/icons/Bathtub.svg',
       areaIcon: '/src/assets/icons/planos.svg',
+      maps: '/src/assets/icons/maps.svg',
     };
   },
 };
 </script>
 
 <template>
-  <div class="Card">
-    <div class="Imagen">
-      <div class="max-w-sm mx-auto bg-card rounded-lg shadow-lg overflow-hidden">
-        <img class="img" :src="property.house" alt="Property Image" />
+  <div class="properties-list">
+    <div v-for="(property, index) in properties" :key="index" class="card">
+      <div class="image-container">
+        <img :src="property.house" alt="Property Image" class="property-image" />
       </div>
-    </div>
-    <div class="Text">
-      <div class="p-4">
-        <h2 class="text-2xl font-bold text-primary">{{ property.price }}</h2>
-        <p class="text-muted-foreground">{{ property.description }}</p>
-        <h3 class="mt-2 text-lg font-semibold">{{ property.address }}</h3>
-        <div class="flex items-center mt-4">
-          <div class="mx-4">
-            <span>
-              <img :src="bedroomIcon" alt="Bedrooms Icon" class="w-6 h-6 inline" />
-            </span>
-            <span class="text-muted-foreground">{{ property.bedrooms }} habs.</span>
+      <div class="content">
+        <h2 class="price">{{ property.price }}</h2>
+        <p class="description">{{ property.description }}</p>
+        <div class="address">
+          <img :src="maps" alt="Maps Icon" class="icon" />
+          <span>{{ property.address }}</span>
+        </div>
+        <div class="features">
+          <div class="feature">
+            <img :src="bedroomIcon" alt="Bedrooms Icon" class="icon" />
+            <span>{{ property.bedrooms }} habs.</span>
           </div>
-          <div class="mx-4">
-            <span>
-              <img :src="elevatorIcon" alt="Elevator Icon" class="w-6 h-6 inline" />
-            </span>
-            <span class="text-muted-foreground">{{ property.elevator }}</span>
+          <div class="feature">
+            <img :src="elevatorIcon" alt="Elevator Icon" class="icon" />
+            <span>{{ property.elevator }}</span>
           </div>
-          <div class="mx-4">
-            <span>
-              <img :src="floorIcon" alt="Floor Icon" class="w-6 h-6 inline" />
-            </span>
-            <span class="text-muted-foreground">{{ property.floor }}</span>
+          <div class="feature">
+            <img :src="floorIcon" alt="Floor Icon" class="icon" />
+            <span>{{ property.floor }}</span>
           </div>
-          <div class="mx-4">
-            <span>
-              <img :src="bathroomIcon" alt="Bathroom Icon" class="w-6 h-6 inline" />
-            </span>
-            <span class="text-muted-foreground">{{ property.bathrooms }} baño</span>
+          <div class="feature">
+            <img :src="bathroomIcon" alt="Bathroom Icon" class="icon" />
+            <span>{{ property.bathrooms }} baño</span>
           </div>
-          <div class="mx-4">
-            <span>
-              <img :src="areaIcon" alt="Area Icon" class="w-6 h-6 inline" />
-            </span>
-            <span class="text-muted-foreground">{{ property.area }} m²</span>
+          <div class="feature">
+            <img :src="areaIcon" alt="Area Icon" class="icon" />
+            <span>{{ property.area }}</span>
           </div>
         </div>
+        <div class="actions">
+          <button class="schedule-visit">Agendar visita</button>
+          <button class="favorite">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+        </div>
       </div>
-      <button id="Button">Agendar visita</button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.Card {
+.properties-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.card {
+  display: flex;
   background-color: #fffbbb;
-  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  flex-direction: row;
 }
 
-.Imagen {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: center;
+.image-container {
+  flex: 1;
+  max-width: 50%;
 }
 
-.img {
-  display: flex;
-  
-  height: 200px;
- 
-}
-
-.Text {
+.property-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   padding: 20px;
 }
 
-#Button {
-  border-radius: 50px;
-  height: 30px;
-  width: 150px;
-  background-color: #f0f0f0;
+.content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.address {
   display: flex;
   align-items: center;
-  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.schedule-visit {
+  background-color: #D6B666;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.favorite {
+  background: none;
+  border: none;
   cursor: pointer;
 }
 
-.p-4 {
-  padding: 1rem;
+.heart-icon {
+  width: 24px;
+  height: 24px;
+  stroke: #999;
 }
 
-.text-2xl {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column;
+  }
 
-.font-bold {
-  font-weight: 700;
-}
+  .image-container {
+    max-width: 100%;
+  }
 
-.text-primary {
-  color: #007bff;
-}
-
-.text-muted-foreground {
-  color: #6c757d;
-}
-
-.mt-2 {
-  margin-top: 0.5rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.font-semibold {
-  font-weight: 600;
-}
-
-.flex {
-  display: flex;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.mt-4 {
-  margin-top: 1rem;
-}
-
-.mx-4 {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
-.w-6 {
-  width: 1.5rem;
-}
-
-.h-6 {
-  height: 1.5rem;
-}
-
-.inline {
-  display: inline-block;
-}
-
-.bg-card {
-  background-color: #fff;
-}
-
-.rounded-lg {
-  border-radius: 0.5rem;
-}
-
-.shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-.overflow-hidden {
-  overflow: hidden;
-}
-
-.max-w-sm {
-  max-width: 24rem;
-}
-
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>
