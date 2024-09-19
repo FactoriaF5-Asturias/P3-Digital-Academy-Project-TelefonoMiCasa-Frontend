@@ -1,9 +1,11 @@
 <script>
+import { useAuthStore } from '@/stores/auth'; // Asegúrate de importar la store correctamente
+
 export default {
   data() {
     return {
       currentTab: 'login',
-      loginEmail: '',
+      loginName: '',
       loginPassword: '',
       registerUsername: '',
       registerPassword: '',
@@ -17,16 +19,38 @@ export default {
     isActiveTab(tab) {
       return this.currentTab === tab;
     },
-    submitLogin() {
-      console.log('Login with:', this.loginUser, this.loginPassword);
-      this.$router.push('adminview');
+    async submitLogin() {
+      const authStore = useAuthStore(); 
+      
+      try {
+        const response = await authStore.login(this.loginName, this.loginPassword);
+        
+        if (response && response.roles) {
+          const userRole = response.roles;  
+          
+        
+          if (userRole === 'ROLE_ADMIN') {
+            console.log('Autenticación exitosa para ADMIN:', response);
+            this.$router.push('/adminview');  
+          } else if (userRole === 'ROLE_USER') {
+            console.log('Autenticación exitosa para USER:', response);
+            this.$router.push('/userview');  
+          } else {
+            console.log('Rol no reconocido:', userRole);
+          }
+        } else {
+          console.log('Error en la autenticación: Rol no presente en la respuesta');
+        }
+      } catch (error) {
+        console.error('Error en el proceso de login:', error);
+      }
     },
     submitRegister() {
-      console.log('Register with:', this.registerUsername, this.registerPassword, this.registerConfirmPassword);
+      console.log('Registro con:', this.registerUsername, this.registerPassword, this.registerConfirmPassword);
+      // Aquí iría la lógica de registro
     }
   }
 };
-
 </script>
 
 <template>
