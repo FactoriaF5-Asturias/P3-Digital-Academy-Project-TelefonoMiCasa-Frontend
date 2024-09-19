@@ -6,15 +6,15 @@
   <header class="bg-granate py-3 w-100">
     <div class="container-fluid d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center">
-        <!-- Logo y nombre de la empresa -->
+        
         <router-link to="/" class="text-white text-decoration-none d-flex align-items-center">
           <img src="/src/assets/images/logo.png" alt="Teléfono Mi Casa" class="img-fluid logo me-2" />
-          <!-- Nombre de la empresa, ajustado para ser más pequeño en móviles -->
+          
           <h1 class="mb-0 ms-2 company-name">Teléfono Mi Casa</h1>
         </router-link>
       </div>
 
-      <!-- Botón de Acceder -->
+      
       <router-link to="/login" class="btn btn-danger d-flex align-items-center btn-responsive">
         <i class="fas fa-user me-2"></i>
         <span>Acceder</span>
@@ -32,7 +32,7 @@
 
 h1 {
   font-size: 1rem;
-  white-space: nowrap; /* Mantener el nombre en una línea en móviles */
+  white-space: nowrap; 
 }
 
 @media (min-width: 768px) {
