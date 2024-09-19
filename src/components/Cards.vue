@@ -4,7 +4,7 @@ export default {
     return {
       properties: [
         {
-          house: '', //aqui ira la imagen de la vivienda
+          house: '/src/assets/icons/house.jpg', //aqui ira la imagen de la vivienda
           price: '', 
           description: '',
           address: '',
@@ -15,7 +15,7 @@ export default {
           area: '',
         },
         {
-          house: '',
+          house: '/src/assets/icons/house.jpg',
           price: '',
           description: '',
           address: '',
@@ -26,7 +26,18 @@ export default {
           area: '',
         },
         {
-          house: '',
+          house: '/src/assets/icons/house.jpg',
+          price: '',
+          description: '',
+          address: '',
+          bedrooms: '',
+          elevator: '',
+          floor: '',
+          bathrooms: '',
+          area: '',
+        },
+        {
+          house: '/src/assets/icons/house.jpg',
           price: '',
           description: '',
           address: '',
@@ -98,10 +109,10 @@ export default {
 
 <style scoped>
 .properties-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+  justify-content: center;
 }
 
 .card {
@@ -110,7 +121,8 @@ export default {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
+  width: 500px;
+  height: 300px;
   margin: 0 auto;
   flex-direction: row;
 }
@@ -132,6 +144,7 @@ export default {
   padding: 20px;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 }
 
 .price {
@@ -200,16 +213,67 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .card {
-    flex-direction: column;
+  .properties-list {
+    grid-template-columns: 1fr;
   }
 
-  .image-container {
-    max-width: 100%;
+  .card {
+    width: 100%;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .property-image {
+    padding: 20px;
+   width: 350px;
+  }
+
+  .content {
+    padding: 10px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 12px;
   }
 
   .features {
     grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .schedule-visit {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  .icon {
+    width: 25px;
+    height: 25px;
+  }
+
+  .schedule-visit {
+    width: 100%;
+    text-align: center;
+  }
+
+  .favorite {
+    display: block;
+    margin-top: 10px;
   }
 }
 </style>
