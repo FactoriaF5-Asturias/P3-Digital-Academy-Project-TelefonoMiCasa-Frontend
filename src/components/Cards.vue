@@ -5,7 +5,7 @@ export default {
     return {
       properties: [
         {
-          house: '/src/assets/icons/house.jpg', //aqui ira la imagen de la vivienda
+          house: '', 
           price: '', 
           description: '',
           address: '',
@@ -15,39 +15,7 @@ export default {
           bathrooms: '',
           area: '',
         },
-        {
-          house: '/src/assets/icons/house.jpg',
-          price: '',
-          description: '',
-          address: '',
-          bedrooms: '',
-          elevator: '',
-          floor: '',
-          bathrooms: '',
-          area: '',
-        },
-        {
-          house: '/src/assets/icons/house.jpg',
-          price: '',
-          description: '',
-          address: '',
-          bedrooms: '',
-          elevator: '',
-          floor: '',
-          bathrooms: '',
-          area: '',
-        },
-        {
-          house: '/src/assets/icons/house.jpg',
-          price: '',
-          description: '',
-          address: '',
-          bedrooms: '',
-          elevator: '',
-          floor: '',
-          bathrooms: '',
-          area: '',
-        },
+        
       ],
       bedroomIcon: '/src/assets/icons/cama.svg',
       elevatorIcon: '/src/assets/icons/asscensor.svg',
@@ -55,6 +23,7 @@ export default {
       bathroomIcon: '/src/assets/icons/Bathtub.svg',
       areaIcon: '/src/assets/icons/planos.svg',
       maps: '/src/assets/icons/maps.svg',
+      house: '/src/assets/images/house.jpg',
     };
   },
   computed: {
@@ -79,7 +48,7 @@ export default {
 
       <div v-for="(property, index) in properties" :key="index" class="card">
         <div class="image-container">
-          <img :src="property.house" alt="Property Image" class="property-image" />
+     <img :src="property.house || 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg'" alt="Property Image" class="property-image" />
         </div>
         <div class="content">
           <h2 class="price">{{ property.price }}</h2>
@@ -128,8 +97,10 @@ export default {
 
 <style scoped>
 .properties-list {
+margin-top: 30px;
+margin-left: 20px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 3fr);
   gap: 20px;
   justify-content: center;
 }
@@ -142,7 +113,6 @@ export default {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 500px;
   height: 300px;
-  margin: 0 auto;
   flex-direction: row;
 }
 
@@ -159,7 +129,7 @@ export default {
 }
 
 .content {
-  flex: 1;
+  
   padding: 20px;
   display: flex;
   flex-direction: column;
