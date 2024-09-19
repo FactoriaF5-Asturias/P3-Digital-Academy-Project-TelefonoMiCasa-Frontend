@@ -13,39 +13,24 @@ const selectVenta = () => {
 
 const searchProperties = async () => {
     if (isVentaSelected.value) {
-        await searchStore.searchProperties('venta'); 
-        router.push('/public'); 
+        await searchStore.searchProperties('venta');
+        router.push('/public');
     } else {
         alert('Por favor, seleccione "Venta" antes de buscar.');
     }
 };
 </script>
+
 <template>
-    <div class="container">
-        <div class="search-bar d-flex justify-content-between align-items-center p-3">
-            <button class="btn btn-primary" @click="selectVenta" :class="{ 'selected': isVentaSelected }">Comprar</button>
-            <input v-model="query" class="form-control mx-3" placeholder="Buscar propiedades..." />
-            <button class="btn btn-secondary" @click="searchProperties">Buscar</button>
-        </div>
+    <div class="search-bar d-flex justify-content-between align-items-center p-3">
+        <button class="btn btn-primary" @click="selectVenta" :class="{ 'selected': isVentaSelected }">Comprar</button>
+        <input v-model="query" class="form-control mx-3" placeholder="Buscar propiedades..." />
+        <button class="btn btn-secondary" @click="searchProperties">Buscar</button>
     </div>
 </template>
-<style>
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: #650000;
-}
 
+<style>
 .search-bar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 140vh;
-    height: 15vh;
-    max-width: 1400px;
-    padding: 20px;
     background-color: rgba(217, 217, 217, 0.69);
 }
 
@@ -83,13 +68,3 @@ input {
     font-size: 28px;
 }
 </style>
-
-
-
-
-
-
-
-
-
-
