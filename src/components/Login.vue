@@ -1,32 +1,89 @@
 <script>
+import { useAuthStore } from '@/stores/auth';
+
 export default {
   data() {
     return {
       currentTab: 'login',
-      loginEmail: '',
+      loginName: '',
       loginPassword: '',
       registerUsername: '',
       registerPassword: '',
-      registerConfirmPassword: ''
+      registerConfirmPassword: '',
+      formErrorMessage: '', 
+      authErrorMessage: '', 
+      registerErrorMessage: '' 
     };
+  },
+  watch: {
+    loginName() {
+      if (this.formErrorMessage) {
+        this.formErrorMessage = '';
+      }
+    },
+    loginPassword() {
+      if (this.formErrorMessage) {
+        this.formErrorMessage = '';
+      }
+    }
   },
   methods: {
     setTab(tab) {
       this.currentTab = tab;
+      this.formErrorMessage = ''; 
+      this.authErrorMessage = '';
+      this.registerErrorMessage = ''; 
     },
     isActiveTab(tab) {
       return this.currentTab === tab;
     },
-    submitLogin() {
-      console.log('Login with:', this.loginUser, this.loginPassword);
-      this.$router.push('adminview');
+    async submitLogin() {
+      if (!this.loginName || !this.loginPassword) {
+        this.formErrorMessage = 'Por favor, rellena todos los campos para continuar.';
+        return;
+      }
+
+      const authStore = useAuthStore(); 
+
+      try {
+        const response = await authStore.login(this.loginName, this.loginPassword);
+        
+        if (response && response.roles) {
+          const userRole = response.roles;  
+
+          if (userRole === 'ROLE_ADMIN') {
+            this.$router.push('/adminview');  
+          } else if (userRole === 'ROLE_USER') {
+            this.$router.push('/userview');  
+          } else {
+            this.authErrorMessage = 'Rol no reconocido.';
+          }
+        } else {
+          this.authErrorMessage = 'Error en la autenticación. Por favor, verifica tus credenciales.';
+        }
+      } catch (error) {
+        this.authErrorMessage = 'Error en la autenticación. Inténtalo de nuevo más tarde.';
+      }
     },
     submitRegister() {
-      console.log('Register with:', this.registerUsername, this.registerPassword, this.registerConfirmPassword);
+      if (!this.registerUsername || !this.registerPassword || !this.registerConfirmPassword) {
+        this.registerErrorMessage = 'Por favor, rellena todos los campos para continuar.';
+        return;
+      }
+
+      if (this.registerPassword !== this.registerConfirmPassword) {
+        this.registerErrorMessage = 'Las contraseñas no coinciden.';
+        return;
+      }
+
+      // Aquí iría la lógica de registro, por ejemplo:
+      // const authStore = useAuthStore();
+      // authStore.register(this.registerUsername, this.registerPassword);
+
+      console.log('Registro con:', this.registerUsername, this.registerPassword);
     }
   }
 };
-
 </script>
 
 <template>
@@ -48,6 +105,9 @@ export default {
       <div class="tab-content">
         <div class="tab-pane fade" :class="{ 'show active': isActiveTab('login') }" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
           <form @submit.prevent="submitLogin">
+            <div v-if="formErrorMessage" class="error-message">{{ formErrorMessage }}</div>
+            <div v-if="authErrorMessage" class="error-message">{{ authErrorMessage }}</div>
+
             <div class="form-outline mb-4">
               <label class="form-label" for="loginName">Usuario</label>
               <input type="user" v-model="loginName" id="loginName" class="form-control" />
@@ -66,6 +126,8 @@ export default {
 
         <div class="tab-pane fade" :class="{ 'show active': isActiveTab('register') }" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
           <form @submit.prevent="submitRegister">
+            <div v-if="registerErrorMessage" class="error-message">{{ registerErrorMessage }}</div>
+
             <div class="form-outline mb-4">
               <label class="form-label" for="registerUsername">Usuario</label>
               <input type="text" v-model="registerUsername" id="registerUsername" class="form-control" />
@@ -90,9 +152,7 @@ export default {
     </div>
   </div>
 </template>
-
 <style scoped>
-/* Variables CSS globales */
 :root {
   --main-bg-color: #f9f9f9;
   --border-color: #ccc;
@@ -125,6 +185,13 @@ export default {
   color: #650000;
 }
 
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
 #botonAcceder, #botonRegistrar {
   background-color: #650000;
   color: white;
@@ -154,7 +221,8 @@ export default {
   justify-content: center;
   margin-bottom: 30px;
 }
-.login-box label{
+
+.login-box label {
   text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.50);
 }
 </style>
