@@ -3,17 +3,21 @@
 </script>
 
 <template>
-  <header class="bg-granate py-4 w-100">
+  <header class="bg-granate py-3 w-100">
     <div class="container-fluid d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center">
+        <!-- Logo y nombre de la empresa -->
         <router-link to="/" class="text-white text-decoration-none d-flex align-items-center">
-          <img src="/src/assets/images/logo.png" alt="Teléfono Mi Casa" class="img-fluid logo me-3" />
-          <h1 class="mb-0">Teléfono Mi Casa</h1>
+          <img src="/src/assets/images/logo.png" alt="Teléfono Mi Casa" class="img-fluid logo me-2" />
+          <!-- Nombre de la empresa, ajustado para ser más pequeño en móviles -->
+          <h1 class="mb-0 ms-2 company-name">Teléfono Mi Casa</h1>
         </router-link>
       </div>
 
-      <router-link to="/login" class="btn btn-danger btn-lg d-flex align-items-center">
-        <i class="fas fa-user me-2"></i> Acceder
+      <!-- Botón de Acceder -->
+      <router-link to="/login" class="btn btn-danger d-flex align-items-center btn-responsive">
+        <i class="fas fa-user me-2"></i>
+        <span>Acceder</span>
       </router-link>
     </div>
   </header>
@@ -21,20 +25,43 @@
 
 <style scoped>
 .logo {
-  width: 80px;
+  width: 70px;
   height: auto;
   border-radius: 50%;
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 1rem;
+  white-space: nowrap; /* Mantener el nombre en una línea en móviles */
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 992px) {
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+.btn-responsive {
+  font-size: 0.9rem;
+  padding: 6px 12px;
+}
+
+@media (min-width: 768px) {
+  .btn-responsive {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+  }
 }
 
 .btn-danger {
   background-color: #ff4500;
   border: none;
-  font-size: 1.2rem; 
-  padding: 10px 20px; 
 }
 
 .btn-danger:hover {
@@ -44,9 +71,6 @@ h1 {
 .bg-granate {
   background-color: #650000;
   width: 100vw;
-  position: relative;
-  left: 0;
-  right: 0;
 }
 
 header {
@@ -56,7 +80,17 @@ header {
 }
 
 .container-fluid {
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+  .container-fluid {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 </style>
