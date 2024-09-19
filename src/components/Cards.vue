@@ -1,42 +1,8 @@
 <script>
+import { useSearchStore } from '../stores/searchStore'; 
 export default {
   data() {
     return {
-      properties: [
-        {
-          house: '', //aqui ira la imagen de la vivienda
-          price: '', 
-          description: '',
-          address: '',
-          bedrooms: '',
-          elevator: '',
-          floor: '',
-          bathrooms: '',
-          area: '',
-        },
-        {
-          house: '',
-          price: '',
-          description: '',
-          address: '',
-          bedrooms: '',
-          elevator: '',
-          floor: '',
-          bathrooms: '',
-          area: '',
-        },
-        {
-          house: '',
-          price: '',
-          description: '',
-          address: '',
-          bedrooms: '',
-          elevator: '',
-          floor: '',
-          bathrooms: '',
-          area: '',
-        },
-      ],
       bedroomIcon: '/src/assets/icons/cama.svg',
       elevatorIcon: '/src/assets/icons/asscensor.svg',
       floorIcon: '/src/assets/icons/Building.svg',
@@ -45,55 +11,73 @@ export default {
       maps: '/src/assets/icons/maps.svg',
     };
   },
+  computed: {
+    properties() {
+      const store = useSearchStore(); 
+      return store.properties;
+    },
+  },
+  mounted() {
+    const store = useSearchStore();
+    store.searchProperties('venta'); 
+  },
 };
 </script>
 
 <template>
+
   <div class="properties-list">
-    <div v-for="(property, index) in properties" :key="index" class="card">
-      <div class="image-container">
-        <img :src="property.house" alt="Property Image" class="property-image" />
-      </div>
-      <div class="content">
-        <h2 class="price">{{ property.price }}</h2>
-        <p class="description">{{ property.description }}</p>
-        <div class="address">
-          <img :src="maps" alt="Maps Icon" class="icon" />
-          <span>{{ property.address }}</span>
+
+      <div v-if="!loading && properties.length === 0" class="no-results"> No hay propiedades disponibles para la
+        búsqueda seleccionada. </div>
+
+      <div v-for="(property, index) in properties" :key="index" class="card">
+        <div class="image-container">
+          <img :src="property.house" alt="Property Image" class="property-image" />
         </div>
-        <div class="features">
-          <div class="feature">
-            <img :src="bedroomIcon" alt="Bedrooms Icon" class="icon" />
-            <span>{{ property.bedrooms }} habs.</span>
+        <div class="content">
+          <h2 class="price">{{ property.price }}</h2>
+          <p class="description">{{ property.description }}</p>
+          <div class="address">
+            <img :src="maps" alt="Maps Icon" class="icon" />
+            <span>{{ property.address }}</span>
           </div>
-          <div class="feature">
-            <img :src="elevatorIcon" alt="Elevator Icon" class="icon" />
-            <span>{{ property.elevator }}</span>
+          <div class="features">
+            <div class="feature">
+              <img :src="bedroomIcon" alt="Bedrooms Icon" class="icon" />
+              <span>{{ property.bedrooms || 'N/A' }} habs.</span>
+            </div>
+            <div class="feature">
+              <img :src="elevatorIcon" alt="Elevator Icon" class="icon" />
+              <span>{{ property.elevator || 'No' }}</span>
+            </div>
+            <div class="feature">
+              <img :src="floorIcon" alt="Floor Icon" class="icon" />
+              <span>{{ property.floor || 'N/A' }}</span>
+            </div>
+            <div class="feature">
+              <img :src="bathroomIcon" alt="Bathroom Icon" class="icon" />
+              <span>{{ property.bathrooms || 'N/A' }} baño</span>
+            </div>
+            <div class="feature">
+              <img :src="areaIcon" alt="Area Icon" class="icon" />
+              <span>{{ property.area }} m²</span>
+            </div>
           </div>
-          <div class="feature">
-            <img :src="floorIcon" alt="Floor Icon" class="icon" />
-            <span>{{ property.floor }}</span>
+          <div class="actions">
+            <button class="schedule-visit">Agendar visita</button>
+            <button class="favorite">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                </path>
+              </svg>
+            </button>
           </div>
-          <div class="feature">
-            <img :src="bathroomIcon" alt="Bathroom Icon" class="icon" />
-            <span>{{ property.bathrooms }} baño</span>
-          </div>
-          <div class="feature">
-            <img :src="areaIcon" alt="Area Icon" class="icon" />
-            <span>{{ property.area }}</span>
-          </div>
-        </div>
-        <div class="actions">
-          <button class="schedule-visit">Agendar visita</button>
-          <button class="favorite">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-          </button>
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
@@ -176,7 +160,12 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+  margin-top: 20px;
+}
 .schedule-visit {
   background-color: #D6B666;
   color: white;
@@ -211,5 +200,11 @@ export default {
   .features {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+  margin-top: 20px;
 }
 </style>
