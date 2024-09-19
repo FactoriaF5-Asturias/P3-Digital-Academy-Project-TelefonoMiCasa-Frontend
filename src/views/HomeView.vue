@@ -5,7 +5,7 @@ import SearchBuy from '@/components/SearchBuy.vue';
 </script>
 
 <template>
-      <div class="text">
+      <div class="text my-5 mx-3">
             <h1>¡No necesitas de una bici voladora para encontrar tu hogar!</h1>
             <h1>Descubre tu casa ideal en Asturias.</h1>
       </div>
@@ -13,16 +13,15 @@ import SearchBuy from '@/components/SearchBuy.vue';
       <SearchBuy />
 
 </template>
-<style >
+
+<style>
 body {
       background-image: url('../assets/images/portada.jpg');
       background-size: cover;
+      background-repeat: no-repeat;
 }
 
 .text {
-      position: absolute;
-      padding-top: 200px;
-      padding-left: 250px;
       font-family: "Jomolhari", serif;
       color: #650000;
       text-shadow:
@@ -30,11 +29,6 @@ body {
             -1px 1px 2px rgba(0, 0, 0, 0.5),
             1px -1px 2px rgba(0, 0, 0, 0.5),
             -1px -1px 2px rgba(0, 0, 0, 0.5);
-
       text-align: center;
 }
-h1 {
-font-size: 6vh;
-}
-
 </style>
