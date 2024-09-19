@@ -160,7 +160,12 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+  margin-top: 20px;
+}
 .schedule-visit {
   background-color: #D6B666;
   color: white;
