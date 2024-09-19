@@ -23,7 +23,7 @@ const searchProperties = async () => {
 <template>
     <div class="container">
         <div class="search-bar d-flex justify-content-between align-items-center p-3">
-            <button class="btn btn-primary" @click="selectVenta" :class="{ 'selected': isVentaSelected }">Venta</button>
+            <button class="btn btn-primary" @click="selectVenta" :class="{ 'selected': isVentaSelected }">Comprar</button>
             <input v-model="query" class="form-control mx-3" placeholder="Buscar propiedades..." />
             <button class="btn btn-secondary" @click="searchProperties">Buscar</button>
         </div>
@@ -61,16 +61,14 @@ input {
 
 .btn-primary,
 .btn-secondary {
+    background-color: #D9D9D9;
+    color: black;
     padding: 42px 30px;
     font-size: 25px;
     box-shadow: 0 2px 4px rgba(1, 1, 1, 0.1);
 }
 
-.btn-primary:hover,
-.btn-secondary:hover {
-    background-color: #FFFFFF;
-    border-color: #650000;
-}
+
 
 .btn-primary.selected {
     background-color: #650000;
