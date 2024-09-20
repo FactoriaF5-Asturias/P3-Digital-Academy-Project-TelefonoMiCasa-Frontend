@@ -1,41 +1,68 @@
 <script setup>
+import axios from 'axios';
 import { ref, onMounted } from 'vue';
+
 
 const email = ref('');
 const password = ref('');
 const salesmen = ref([]);
 
+
 const handleSubmit = async () => {
   if (email.value && password.value) {
-    await createSalesman(email.value, password.value);
+
+    const encodedPassword = window.btoa(password.value);
+    
+   
+    await createSalesman(email.value, encodedPassword);
+    
+   
     email.value = '';
     password.value = '';
-    await fetchSalesmen();
+    
+    
+    // await fetchSalesmen();
   } else {
     alert('Por favor completa ambos campos correctamente');
   }
 };
 
-async function createSalesman(username, password) {
-  try {
-    const response = await fetch('http://localhost:8080/api/v1/salesmen', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username, password })
-    });
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+async function createSalesman(username, password) {
+
+  try { 
+    
+    const headers = {
+      'Content-Type': 'application/json',
+      'username': username,
+      'password': password
+    }
+    
+    const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA
+    const uri = '/salesmen'
+
+    const config = {
+      withCredentials: true,
+      headers: headers
     }
 
-    const message = await response.text();
-    console.log('Create Salesman Response:', message);
+    const response = await axios.post(baseUri + uri, {}, config)
+    console.log(response.status);
+  
+
+    if (response.status != 200) {
+      throw new Error('Network response was not ok');
+    }
+    
+    console.log(response.data);
+
+    
+    
   } catch (error) {
     console.error('Error creating salesman:', error);
   }
 }
+
 
 async function fetchSalesmen() {
   try {
@@ -53,7 +80,7 @@ async function fetchSalesmen() {
 
 
 onMounted(() => {
-  fetchSalesmen();
+  // fetchSalesmen();
 });
 </script>
 
