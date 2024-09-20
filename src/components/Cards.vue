@@ -3,12 +3,27 @@ import { useSearchStore } from '../stores/searchStore';
 export default {
   data() {
     return {
+      properties: [
+        {
+          house: '', 
+          price: '', 
+          description: '',
+          address: '',
+          bedrooms: '',
+          elevator: '',
+          floor: '',
+          bathrooms: '',
+          area: '',
+        },
+        
+      ],
       bedroomIcon: '/src/assets/icons/cama.svg',
       elevatorIcon: '/src/assets/icons/asscensor.svg',
       floorIcon: '/src/assets/icons/Building.svg',
       bathroomIcon: '/src/assets/icons/Bathtub.svg',
       areaIcon: '/src/assets/icons/planos.svg',
       maps: '/src/assets/icons/maps.svg',
+      house: '/src/assets/images/house.jpg',
     };
   },
   computed: {
@@ -33,7 +48,7 @@ export default {
 
       <div v-for="(property, index) in properties" :key="index" class="card">
         <div class="image-container">
-          <img :src="property.house" alt="Property Image" class="property-image" />
+     <img :src="property.house || 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg'" alt="Property Image" class="property-image" />
         </div>
         <div class="content">
           <h2 class="price">{{ property.price }}</h2>
@@ -82,10 +97,12 @@ export default {
 
 <style scoped>
 .properties-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+margin-top: 30px;
+margin-left: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 3fr);
   gap: 20px;
+  justify-content: center;
 }
 
 .card {
@@ -94,8 +111,8 @@ export default {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  margin: 0 auto;
+  width: 500px;
+  height: 300px;
   flex-direction: row;
 }
 
@@ -112,10 +129,11 @@ export default {
 }
 
 .content {
-  flex: 1;
+  
   padding: 20px;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 }
 
 .price {
@@ -150,8 +168,8 @@ export default {
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   margin-right: 5px;
 }
 
@@ -159,6 +177,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  display: none;
 }
 .no-results {
   text-align: center;
@@ -189,16 +208,67 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .card {
-    flex-direction: column;
+  .properties-list {
+    grid-template-columns: 1fr;
   }
 
-  .image-container {
-    max-width: 100%;
+  .card {
+    width: 100%;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .property-image {
+    padding: 20px;
+   width: 350px;
+  }
+
+  .content {
+    padding: 10px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 12px;
   }
 
   .features {
     grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .schedule-visit {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  .icon {
+    width: 25px;
+    height: 25px;
+  }
+
+  .schedule-visit {
+    width: 100%;
+    text-align: center;
+  }
+
+  .favorite {
+    display: block;
+    margin-top: 10px;
   }
 }
 .no-results {
