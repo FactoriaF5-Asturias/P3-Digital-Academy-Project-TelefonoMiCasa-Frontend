@@ -1,24 +1,29 @@
 <script setup>
+import { ref } from 'vue';
+import LoginPopup from '../Login.vue'; 
 
+const loginPopupRef = ref(null);
+
+const openLoginPopup = () => {
+  loginPopupRef.value.openPopup();
+};
 </script>
 
 <template>
     <header class="container-fluid bg-granate py-4 d-flex justify-content-between">
-      
       <div class="d-flex align-items-center">
         <router-link to="/" class="text-white text-decoration-none d-flex align-items-center">
           <img src="/src/assets/images/logo.png" alt="Teléfono Mi Casa" class="img-fluid logo me-2" />
-          
           <h1 class="mb-0 ms-2">Teléfono Mi Casa</h1>
         </router-link>
       </div>
-
       
-      <router-link to="/login" class="btn btn-danger d-flex align-items-center btn-responsive">
+      <a @click.prevent="openLoginPopup" class="btn btn-danger d-flex align-items-center btn-responsive" href="#">
         <i class="fas fa-user me-2"></i>
         <span>Acceder</span>
-      </router-link>
+      </a>
 
+      <LoginPopup ref="loginPopupRef" />
     </header>
 </template>
 
