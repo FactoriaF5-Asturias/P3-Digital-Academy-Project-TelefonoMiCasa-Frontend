@@ -168,8 +168,8 @@ margin-left: 20px;
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   margin-right: 5px;
 }
 
@@ -177,6 +177,7 @@ margin-left: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  display: none;
 }
 .no-results {
   text-align: center;
