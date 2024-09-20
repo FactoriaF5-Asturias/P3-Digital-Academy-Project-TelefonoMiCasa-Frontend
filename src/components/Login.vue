@@ -181,6 +181,7 @@ input{
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  left: 0px;
 }
 
 .login-container {
