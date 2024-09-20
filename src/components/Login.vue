@@ -1,103 +1,102 @@
-<script>
+<script setup>
+import { ref, watch, computed, defineExpose } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
-export default {
-  data() {
-    return {
-      isOpen: false,
-      currentTab: 'login',
-      loginName: '',
-      loginPassword: '',
-      registerUsername: '',
-      registerPassword: '',
-      registerConfirmPassword: '',
-      formErrorMessage: '', 
-      authErrorMessage: '', 
-      registerErrorMessage: '' 
-    };
-  },
-  watch: {
-    loginName() {
-      if (this.formErrorMessage) {
-        this.formErrorMessage = '';
+const router = useRouter();
+const authStore = useAuthStore();
+
+const isOpen = ref(false);
+const currentTab = ref('login');
+const loginName = ref('');
+const loginPassword = ref('');
+const registerUsername = ref('');
+const registerPassword = ref('');
+const registerConfirmPassword = ref('');
+const formErrorMessage = ref('');
+const authErrorMessage = ref('');
+const registerErrorMessage = ref('');
+
+watch(loginName, () => {
+  if (formErrorMessage.value) {
+    formErrorMessage.value = '';
+  }
+});
+
+watch(loginPassword, () => {
+  if (formErrorMessage.value) {
+    formErrorMessage.value = '';
+  }
+});
+
+const openPopup = () => {
+  isOpen.value = true;
+};
+
+const closePopup = () => {
+  isOpen.value = false;
+};
+
+const setTab = (tab) => {
+  currentTab.value = tab;
+  formErrorMessage.value = '';
+  authErrorMessage.value = '';
+  registerErrorMessage.value = '';
+};
+
+const isActiveTab = computed(() => {
+  return (tab) => currentTab.value === tab;
+});
+
+const submitLogin = async () => {
+  if (!loginName.value || !loginPassword.value) {
+    formErrorMessage.value = 'Por favor, rellena todos los campos para continuar.';
+    return;
+  }
+
+  try {
+    const response = await authStore.login(loginName.value, loginPassword.value);
+    
+    if (response && response.roles) {
+      const userRole = response.roles;  
+
+      if (userRole === 'ROLE_ADMIN') {
+        router.push('/adminview');  
+      } else if (userRole === 'ROLE_USER') {
+        router.push('/userview');  
+      } else {
+        authErrorMessage.value = 'Rol no reconocido.';
       }
-    },
-    loginPassword() {
-      if (this.formErrorMessage) {
-        this.formErrorMessage = '';
-      }
+      closePopup();
+    } else {
+      authErrorMessage.value = 'Error en la autenticación. Por favor, verifica tus credenciales.';
     }
-  },
-  methods: {
-    openPopup() {
-      this.isOpen = true;
-    },
-    closePopup() {
-      this.isOpen = false;
-    },
-    setTab(tab) {
-      this.currentTab = tab;
-      this.formErrorMessage = ''; 
-      this.authErrorMessage = '';
-      this.registerErrorMessage = ''; 
-    },
-    isActiveTab(tab) {
-      return this.currentTab === tab;
-    },
-    async submitLogin() {
-      if (!this.loginName || !this.loginPassword) {
-        this.formErrorMessage = 'Por favor, rellena todos los campos para continuar.';
-        return;
-      }
-
-      const authStore = useAuthStore(); 
-
-      try {
-        const response = await authStore.login(this.loginName, this.loginPassword);
-        
-        if (response && response.roles) {
-          const userRole = response.roles;  
-
-          if (userRole === 'ROLE_ADMIN') {
-            this.$router.push('/adminview');  
-          } else if (userRole === 'ROLE_USER') {
-            this.$router.push('/userview');  
-          } else {
-            this.authErrorMessage = 'Rol no reconocido.';
-          }
-          this.closePopup();
-        } else {
-          this.authErrorMessage = 'Error en la autenticación. Por favor, verifica tus credenciales.';
-        }
-      } catch (error) {
-        this.authErrorMessage = 'Error en la autenticación. Inténtalo de nuevo más tarde.';
-      }
-    },
-    submitRegister() {
-      if (!this.registerUsername || !this.registerPassword || !this.registerConfirmPassword) {
-        this.registerErrorMessage = 'Por favor, rellena todos los campos para continuar.';
-        return;
-      }
-
-      if (this.registerPassword !== this.registerConfirmPassword) {
-        this.registerErrorMessage = 'Las contraseñas no coinciden.';
-        return;
-      }
-
-      // Aquí iría la lógica de registro, por ejemplo:
-      // const authStore = useAuthStore();
-      // authStore.register(this.registerUsername, this.registerPassword);
-
-      console.log('Registro con:', this.registerUsername, this.registerPassword);
-      this.closePopup();
-    }
+  } catch (error) {
+    authErrorMessage.value = 'Error en la autenticación. Inténtalo de nuevo más tarde.';
   }
 };
-</script>
 
+const submitRegister = () => {
+  if (!registerUsername.value || !registerPassword.value || !registerConfirmPassword.value) {
+    registerErrorMessage.value = 'Por favor, rellena todos los campos para continuar.';
+    return;
+  }
+
+  if (registerPassword.value !== registerConfirmPassword.value) {
+    registerErrorMessage.value = 'Las contraseñas no coinciden.';
+    return;
+  }
+
+  // Aquí iría la lógica de registro, por ejemplo:
+  console.log('Registro con:', registerUsername.value, registerPassword.value);
+  closePopup();
+};
+
+// Exponer el método openPopup
+defineExpose({ openPopup });
+</script>
 <template>
-  <div v-if="isOpen" class="popup-overlay">
-    <div v-if="isOpen" class="popup-overlay" @click.self="closePopup">
+  <div v-if="isOpen" class="popup-overlay" @click.self="closePopup">
     <div class="login-container">
       <div class="login-box">
         <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
@@ -161,10 +160,12 @@ export default {
           </div>
         </div>
       </div>
-    
-    </div>    </div>
+    </div>
   </div>
 </template>
+
+
+
 
 
 <style scoped>
@@ -186,7 +187,7 @@ input{
   background-color: white;
   border-radius: 10px;
   padding: 20px;
-  max-width: 500px; /* Aumentado el ancho */
+  max-width: 500px;
   width: 100%;
   position: relative;
 }
@@ -208,7 +209,7 @@ input{
   align-items: center;
   min-height: 100vh;
   background-color: var(--main-bg-color);
-  width: 450px; /* Ancho ajustado */
+  width: 450px;
 }
 
 .login-box {
@@ -216,7 +217,7 @@ input{
   border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 20px;
-  max-width: 500px; /* Aumentado el ancho */
+  max-width: 500px;
   width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: "Jomolhari", serif;
@@ -224,11 +225,11 @@ input{
 }
 
 .form-control {
-  width: 100%; /* Ajuste para que los inputs ocupen todo el ancho */
-  padding: 10px; /* Mejora la separación interna */
+  width: 100%;
+  padding: 10px;
   border: solid 1px;
   border-color: #650000;
-  border-radius: 5px; /* Añadimos bordes redondeados para mejor estética */
+  border-radius: 5px;
 }
 
 .error-message {
@@ -242,8 +243,8 @@ input{
   background-color: #650000;
   color: white;
   font-weight: bold;
-  width: 50%; /* Ajustamos el tamaño del botón */
-  padding: 10px; /* Añadimos más relleno a los botones */
+  width: 50%;
+  padding: 10px;
 }
 
 .nav-link {
