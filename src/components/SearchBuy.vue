@@ -57,7 +57,7 @@ const searchProperties = async () => {
 
 input {
    
-    height: 120px;
+    height: 90px;
     font-size: 24px;
     color: #D9D9D9;
     border: 1px solid #650000;
@@ -69,7 +69,7 @@ input {
 .btn-secondary {
     background-color: #D9D9D9;
     color: black;
-    padding: 42px 30px;
+    padding: 32px 25px;
     font-size: 25px;
     box-shadow: 0 2px 4px rgba(1, 1, 1, 0.1);
    
@@ -103,7 +103,7 @@ input {
     font-size: 1.25rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 780px) {
     .search-bar {
         flex-direction: column;
         align-items: center;
