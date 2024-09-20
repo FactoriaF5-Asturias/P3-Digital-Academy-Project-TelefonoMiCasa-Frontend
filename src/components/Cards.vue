@@ -1,46 +1,17 @@
-<script>
-import { useSearchStore } from '../stores/searchStore'; 
-export default {
-  data() {
-    return {
-      properties: [
-        {
-          house: '', 
-          price: '', 
-          description: '',
-          address: '',
-          bedrooms: '',
-          elevator: '',
-          floor: '',
-          bathrooms: '',
-          area: '',
-        },
-        
-      ],
-      bedroomIcon: '/src/assets/icons/cama.svg',
-      elevatorIcon: '/src/assets/icons/asscensor.svg',
-      floorIcon: '/src/assets/icons/Building.svg',
-      bathroomIcon: '/src/assets/icons/Bathtub.svg',
-      areaIcon: '/src/assets/icons/planos.svg',
-      maps: '/src/assets/icons/maps.svg',
-      house: '/src/assets/images/house.jpg',
-    };
-  },
-  computed: {
-    properties() {
-      const store = useSearchStore(); 
-      return store.properties;
-    },
-  },
-  mounted() {
-    const store = useSearchStore();
-    store.searchProperties('venta'); 
-  },
-};
+<script setup>
+import { onMounted, ref } from 'vue';
+import { useSearchStore } from '../stores/searchStore';
+import { useRoute } from 'vue-router';
+const route = useRoute();
+const searchStore = useSearchStore();
+const properties = ref([]);
+onMounted(async () => {
+  const action = route.query.action || 'venta' || 'alquiler';
+  await searchStore.searchProperties(action);
+  properties.value = searchStore.properties;
+});
 </script>
-
 <template>
-
   <div class="properties-list">
 
       <div v-if="!loading && properties.length === 0" class="no-results"> No hay propiedades disponibles para la
@@ -94,7 +65,6 @@ export default {
       </div>
     </div>
 </template>
-
 <style scoped>
 .properties-list {
 margin-top: 30px;
@@ -107,7 +77,7 @@ margin-left: 20px;
 
 .card {
   display: flex;
-  background-color: #fffbbb;
+  background-color: #FFFBBB;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -179,12 +149,14 @@ margin-left: 20px;
   align-items: center;
   display: none;
 }
+
 .no-results {
   text-align: center;
   font-size: 18px;
   color: #666;
   margin-top: 20px;
 }
+
 .schedule-visit {
   background-color: #D6B666;
   color: white;
@@ -271,6 +243,7 @@ margin-left: 20px;
     margin-top: 10px;
   }
 }
+
 .no-results {
   text-align: center;
   font-size: 18px;
@@ -278,3 +251,15 @@ margin-left: 20px;
   margin-top: 20px;
 }
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
