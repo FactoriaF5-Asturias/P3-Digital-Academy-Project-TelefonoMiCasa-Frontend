@@ -79,10 +79,12 @@ onMounted(async () => {
 .properties-list {
 margin-top: 30px;
 margin-left: 20px;
+
   display: grid;
   grid-template-columns: repeat(2, 3fr);
   gap: 20px;
   justify-content: center;
+  grid-template-columns: 600px 400px;
 }
 
 .card {
@@ -91,9 +93,10 @@ margin-left: 20px;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 500px;
+  width: 580px;
   height: 300px;
   flex-direction: row;
+  
 }
 
 .image-container {
