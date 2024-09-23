@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/components/Button.vue';
 import Cards from '@/components/Cards.vue';
 
 
@@ -9,7 +10,7 @@ import Cards from '@/components/Cards.vue';
 <template>
   <main>
     <h1>Admin view</h1>
-    <Cards/>
+    <Button/>
   </main>
 </template>
 
