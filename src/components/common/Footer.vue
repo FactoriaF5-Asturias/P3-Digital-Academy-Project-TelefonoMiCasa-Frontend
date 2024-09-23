@@ -39,23 +39,23 @@ const developers = [
 </script>
 
 <template>
+  <div class="container-fluid bg-granate py-2 d-flex justify-content-between align-items-center flex-wrap fixed-bottom">
 
-    <div class="container-fluid bg-granate py-4 d-flex justify-content-between align-items-center flex-wrap fixed-bottom">
-
-      <div class="text-left">
-        <p class="text-white mb-0">© 2024 Teléfono Mi Casa. Todos los derechos reservados.</p>
-      </div>
-
-      <div class="d-flex justify-content-end flex-wrap">
-        <div v-for="developer in developers" :key="developer.name" class="mx-2">
-          <a :href="developer.githubLink" target="_blank" rel="noopener noreferrer">
-            <img :src="developer.avatar" :alt="developer.name" class="img-fluid developer-avatar" />
-          </a>
-        </div>
-      </div>
-
+    
+    <div class="text-left text-md-left w-auto">
+      <p class="text-white mb-0">© 2024 Teléfono Mi Casa. Todos los derechos reservados.</p>
     </div>
 
+    
+    
+      <div class="d-flex justify-content-end flex-wrap">
+        <a class="avatar-wrapper col-auto p-1" v-for="developer in developers" :key="developer.name" :href="developer.githubLink" target="_blank" rel="noopener noreferrer">
+          <img :src="developer.avatar" :alt="developer.name" class="img-fluid developer-avatar" />
+        </a>
+      </div>
+    
+
+  </div>
 </template>
 
 <style scoped>
@@ -64,22 +64,20 @@ const developers = [
 }
 
 .text-left {
-  flex: 1;
-  text-align: left;
+  font-size: 95%;
 }
 
 .developer-avatar {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
 }
 
-a {
-  text-decoration: none;
-}
 
 a:hover img {
   opacity: 0.8;
 }
-
 </style>
+
+
+
