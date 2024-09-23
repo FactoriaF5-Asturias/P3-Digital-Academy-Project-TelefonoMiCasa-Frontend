@@ -5,8 +5,9 @@ import { ref, onMounted } from 'vue';
 const email = ref('');
 const password = ref('');
 const salesmen = ref([]);
-const message = ref(''); // Para mostrar el mensaje de éxito o error
-const isSuccess = ref(false); // Para controlar el estilo del mensaje
+const message = ref(''); 
+const isSuccess = ref(false); 
+const isPopupVisible = ref(true); 
 
 const handleSubmit = async () => {
   if (email.value && password.value) {
@@ -18,7 +19,7 @@ const handleSubmit = async () => {
     password.value = '';
   } else {
     message.value = 'Por favor completa ambos campos correctamente';
-    isSuccess.value = false; // Mensaje de error
+    isSuccess.value = false; 
   }
 };
 
@@ -45,11 +46,11 @@ async function createSalesman(username, password) {
     }
     
     message.value = 'Vendedor creado exitosamente';
-    isSuccess.value = true; // Mensaje de éxito
+    isSuccess.value = true; 
 
   } catch (error) {
     message.value = 'Error creando el vendedor, inténtalo nuevamente';
-    isSuccess.value = false; // Mensaje de error
+    isSuccess.value = false;
     console.error('Error creating salesman:', error);
   }
 }
@@ -68,17 +69,24 @@ async function fetchSalesmen() {
 }
 
 onMounted(() => {
-  // fetchSalesmen();
+ 
 });
+
+const closePopup = () => {
+  isPopupVisible.value = false; 
+};
 </script>
 
 <template>
-  <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+  <div v-if="isPopupVisible" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
     <section class="vh-100 login-section">
       <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-12 col-md-8 col-lg-6 col-xl-5">
             <div class="card shadow-2-strong login-card">
+              
+              <button @click="closePopup" class="close-btn">X</button>
+
               <div class="card-body p-6 text-right">
                 <form @submit.prevent="handleSubmit">
                   <div class="form-outline mb-4">
@@ -94,17 +102,12 @@ onMounted(() => {
                   <button class="btn btn-primary btn-lg centered-btn" type="submit">Añadir</button>
                 </form>
 
-                <!-- Mensaje de validación -->
+                
                 <div v-if="message" :class="isSuccess ? 'success-message' : 'error-message'" class="mt-3">
                   {{ message }}
                 </div>
 
-                <div class="mt-4">
-                  <h3>Vendedores Existentes:</h3>
-                  <ul id="salesmen-list">
-                    <li v-for="salesman in salesmen" :key="salesman.username">{{ salesman.username }}</li>
-                  </ul>
-                </div>
+                
               </div>
             </div>
           </div>
@@ -120,9 +123,22 @@ onMounted(() => {
 }
 
 .login-card {
+  position: relative; /* Añadir para que el botón de cerrar esté dentro de la tarjeta */
   border-radius: 1rem;
   background-color: #650000;
   font-family: "Jomolhari", serif;
+}
+
+/* Estilos para el botón de cerrar */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
 }
 
 .form-outline p {
