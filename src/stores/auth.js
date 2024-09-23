@@ -8,8 +8,8 @@ export const useAuthStore = defineStore('auth', () => {
 
     const user = ref(
         {
-            username: 'admin',
-            password: 'my-password',
+            username: '',
+            password: '',
             isAuthenticated: false
         }
     )

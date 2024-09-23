@@ -19,6 +19,7 @@ onMounted(async () => {
   await searchStore.searchProperties(action);
   properties.value = searchStore.properties;
 });
+
 </script>
 <template>
   <div class="properties-list">

@@ -1,158 +1,198 @@
-<script>
+<script setup>
+import { ref, watch, computed, defineExpose } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
-export default {
-  data() {
-    return {
-      currentTab: 'login',
-      loginName: '',
-      loginPassword: '',
-      registerUsername: '',
-      registerPassword: '',
-      registerConfirmPassword: '',
-      formErrorMessage: '', 
-      authErrorMessage: '', 
-      registerErrorMessage: '' 
-    };
-  },
-  watch: {
-    loginName() {
-      if (this.formErrorMessage) {
-        this.formErrorMessage = '';
+const router = useRouter();
+const authStore = useAuthStore();
+
+const isOpen = ref(false);
+const currentTab = ref('login');
+const loginName = ref('');
+const loginPassword = ref('');
+const registerUsername = ref('');
+const registerPassword = ref('');
+const registerConfirmPassword = ref('');
+const formErrorMessage = ref('');
+const authErrorMessage = ref('');
+const registerErrorMessage = ref('');
+
+watch(loginName, () => {
+  if (formErrorMessage.value) {
+    formErrorMessage.value = '';
+  }
+});
+
+watch(loginPassword, () => {
+  if (formErrorMessage.value) {
+    formErrorMessage.value = '';
+  }
+});
+
+const openPopup = () => {
+  isOpen.value = true;
+};
+
+const closePopup = () => {
+  isOpen.value = false;
+};
+
+const setTab = (tab) => {
+  currentTab.value = tab;
+  formErrorMessage.value = '';
+  authErrorMessage.value = '';
+  registerErrorMessage.value = '';
+};
+
+const isActiveTab = computed(() => {
+  return (tab) => currentTab.value === tab;
+});
+
+const submitLogin = async () => {
+  if (!loginName.value || !loginPassword.value) {
+    formErrorMessage.value = 'Por favor, rellena todos los campos para continuar.';
+    return;
+  }
+
+  try {
+    const response = await authStore.login(loginName.value, loginPassword.value);
+    
+    if (response && response.roles) {
+      const userRole = response.roles;  
+
+      if (userRole === 'ROLE_ADMIN') {
+        router.push('/adminview');  
+      } else if (userRole === 'ROLE_USER') {
+        router.push('/userview');  
+      } else {
+        authErrorMessage.value = 'Rol no reconocido.';
       }
-    },
-    loginPassword() {
-      if (this.formErrorMessage) {
-        this.formErrorMessage = '';
-      }
+      closePopup();
+    } else {
+      authErrorMessage.value = 'Error en la autenticación. Por favor, verifica tus credenciales.';
     }
-  },
-  methods: {
-    setTab(tab) {
-      this.currentTab = tab;
-      this.formErrorMessage = ''; 
-      this.authErrorMessage = '';
-      this.registerErrorMessage = ''; 
-    },
-    isActiveTab(tab) {
-      return this.currentTab === tab;
-    },
-    async submitLogin() {
-      if (!this.loginName || !this.loginPassword) {
-        this.formErrorMessage = 'Por favor, rellena todos los campos para continuar.';
-        return;
-      }
-
-      const authStore = useAuthStore(); 
-
-      try {
-        const response = await authStore.login(this.loginName, this.loginPassword);
-        
-        if (response && response.roles) {
-          const userRole = response.roles;  
-
-          if (userRole === 'ROLE_ADMIN') {
-            this.$router.push('/adminview');  
-          } else if (userRole === 'ROLE_USER') {
-            this.$router.push('/userview');  
-          } else {
-            this.authErrorMessage = 'Rol no reconocido.';
-          }
-        } else {
-          this.authErrorMessage = 'Error en la autenticación. Por favor, verifica tus credenciales.';
-        }
-      } catch (error) {
-        this.authErrorMessage = 'Error en la autenticación. Inténtalo de nuevo más tarde.';
-      }
-    },
-    submitRegister() {
-      if (!this.registerUsername || !this.registerPassword || !this.registerConfirmPassword) {
-        this.registerErrorMessage = 'Por favor, rellena todos los campos para continuar.';
-        return;
-      }
-
-      if (this.registerPassword !== this.registerConfirmPassword) {
-        this.registerErrorMessage = 'Las contraseñas no coinciden.';
-        return;
-      }
-
-      // Aquí iría la lógica de registro, por ejemplo:
-      // const authStore = useAuthStore();
-      // authStore.register(this.registerUsername, this.registerPassword);
-
-      console.log('Registro con:', this.registerUsername, this.registerPassword);
-    }
+  } catch (error) {
+    authErrorMessage.value = 'Error en la autenticación. Inténtalo de nuevo más tarde.';
   }
 };
+
+const submitRegister = () => {
+  if (!registerUsername.value || !registerPassword.value || !registerConfirmPassword.value) {
+    registerErrorMessage.value = 'Por favor, rellena todos los campos para continuar.';
+    return;
+  }
+
+  if (registerPassword.value !== registerConfirmPassword.value) {
+    registerErrorMessage.value = 'Las contraseñas no coinciden.';
+    return;
+  }
+
+  // Aquí iría la lógica de registro, por ejemplo:
+  console.log('Registro con:', registerUsername.value, registerPassword.value);
+  closePopup();
+};
+
+// Exponer el método openPopup
+defineExpose({ openPopup });
 </script>
-
 <template>
-  <div class="login-container">
-    <div class="login-box">
-      <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-        <li class="nav-item" role="presentation">
-          <a class="nav-link" :class="{ active: isActiveTab('login') }" @click="setTab('login')"
-             id="tab-login" href="#pills-login" role="tab"
-             aria-controls="pills-login" :aria-selected="isActiveTab('login')">Acceder</a>
-        </li>
-        <li class="nav-item" role="presentation">
-          <a class="nav-link" :class="{ active: isActiveTab('register') }" @click="setTab('register')"
-             id="tab-register" href="#pills-register" role="tab"
-             aria-controls="pills-register" :aria-selected="isActiveTab('register')">Registro</a>
-        </li>
-      </ul>
+  <div v-if="isOpen" class="popup-overlay" @click.self="closePopup">
+    <div class="login-container">
+      <div class="login-box">
+        <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" :class="{ active: isActiveTab('login') }" @click="setTab('login')"
+               id="tab-login" href="#pills-login" role="tab"
+               aria-controls="pills-login" :aria-selected="isActiveTab('login')">Acceder</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" :class="{ active: isActiveTab('register') }" @click="setTab('register')"
+               id="tab-register" href="#pills-register" role="tab"
+               aria-controls="pills-register" :aria-selected="isActiveTab('register')">Registro</a>
+          </li>
+        </ul>
 
-      <div class="tab-content">
-        <div class="tab-pane fade" :class="{ 'show active': isActiveTab('login') }" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-          <form @submit.prevent="submitLogin">
-            <div v-if="formErrorMessage" class="error-message">{{ formErrorMessage }}</div>
-            <div v-if="authErrorMessage" class="error-message">{{ authErrorMessage }}</div>
+        <div class="tab-content">
+          <div class="tab-pane fade" :class="{ 'show active': isActiveTab('login') }" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+            <form @submit.prevent="submitLogin">
+              <div v-if="formErrorMessage" class="error-message">{{ formErrorMessage }}</div>
+              <div v-if="authErrorMessage" class="error-message">{{ authErrorMessage }}</div>
 
-            <div class="form-outline mb-4">
-              <label class="form-label" for="loginName">Usuario</label>
-              <input type="user" v-model="loginName" id="loginName" class="form-control" />
-            </div>
+              <div class="form-outline mb-4">
+                <label class="form-label" for="loginName">Usuario</label>
+                <input type="user" v-model="loginName" id="loginName" class="form-control" />
+              </div>
 
-            <div class="form-outline mb-4">
-              <label class="form-label" for="loginPassword">Contraseña</label>
-              <input type="password" v-model="loginPassword" id="loginPassword" class="form-control" />
-            </div>
+              <div class="form-outline mb-4">
+                <label class="form-label" for="loginPassword">Contraseña</label>
+                <input type="password" v-model="loginPassword" id="loginPassword" class="form-control" />
+              </div>
 
-            <div class="button-container">
-              <button type="submit" id="botonAcceder" class="btn btn-block mb-4">Acceder</button>
-            </div>
-          </form>
-        </div>
+              <div class="button-container">
+                <button type="submit" id="botonAcceder" class="btn btn-block mb-4">Acceder</button>
+              </div>
+            </form>
+          </div>
 
-        <div class="tab-pane fade" :class="{ 'show active': isActiveTab('register') }" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
-          <form @submit.prevent="submitRegister">
-            <div v-if="registerErrorMessage" class="error-message">{{ registerErrorMessage }}</div>
+          <div class="tab-pane fade" :class="{ 'show active': isActiveTab('register') }" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+            <form @submit.prevent="submitRegister">
+              <div v-if="registerErrorMessage" class="error-message">{{ registerErrorMessage }}</div>
 
-            <div class="form-outline mb-4">
-              <label class="form-label" for="registerUsername">Usuario</label>
-              <input type="text" v-model="registerUsername" id="registerUsername" class="form-control" />
-            </div>
+              <div class="form-outline mb-4">
+                <label class="form-label" for="registerUsername">Usuario</label>
+                <input type="text" v-model="registerUsername" id="registerUsername" class="form-control" />
+              </div>
 
-            <div class="form-outline mb-4">
-              <label class="form-label" for="registerPassword">Contraseña</label>
-              <input type="password" v-model="registerPassword" id="registerPassword" class="form-control" />
-            </div>
+              <div class="form-outline mb-4">
+                <label class="form-label" for="registerPassword">Contraseña</label>
+                <input type="password" v-model="registerPassword" id="registerPassword" class="form-control" />
+              </div>
 
-            <div class="form-outline mb-4">
-              <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña</label>
-              <input type="password" v-model="registerConfirmPassword" id="registerConfirmPassword" class="form-control" />
-            </div>
+              <div class="form-outline mb-4">
+                <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña</label>
+                <input type="password" v-model="registerConfirmPassword" id="registerConfirmPassword" class="form-control" />
+              </div>
 
-            <div class="button-container">
-              <button type="submit" id="botonRegistrar" class="btn btn-block mb-4">Registrar</button>
-            </div>
-          </form>
+              <div class="button-container">
+                <button type="submit" id="botonRegistrar" class="btn btn-block mb-4">Registrar</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+
+
+
+
 <style scoped>
+input{
+  max-height: 50px;
+}
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  left: 0px;
+}
+
+.login-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+}
+
 :root {
   --main-bg-color: #f9f9f9;
   --border-color: #ccc;
@@ -170,7 +210,7 @@ export default {
   align-items: center;
   min-height: 100vh;
   background-color: var(--main-bg-color);
-  width: 350px;
+  width: 450px;
 }
 
 .login-box {
@@ -178,11 +218,19 @@ export default {
   border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 20px;
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: "Jomolhari", serif;
   color: #650000;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: solid 1px;
+  border-color: #650000;
+  border-radius: 5px;
 }
 
 .error-message {
@@ -196,7 +244,8 @@ export default {
   background-color: #650000;
   color: white;
   font-weight: bold;
-  width: 40%;
+  width: 50%;
+  padding: 10px;
 }
 
 .nav-link {
@@ -209,11 +258,6 @@ export default {
 .nav-link.active {
   background-color: #650000;
   color: white;
-}
-
-.form-control {
-  border: solid 1px;
-  border-color: #650000;
 }
 
 .button-container {
