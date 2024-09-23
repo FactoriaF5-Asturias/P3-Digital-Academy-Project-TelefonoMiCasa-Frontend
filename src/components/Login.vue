@@ -62,8 +62,8 @@ const submitLogin = async () => {
 
       if (userRole === 'ROLE_ADMIN') {
         router.push('/adminview');  
-      } else if (userRole === 'ROLE_USER') {
-        router.push('/userview');  
+      } else if (userRole === 'ROLE_SALESMAN') {
+        router.push('/salesmanview');  
       } else {
         authErrorMessage.value = 'Rol no reconocido.';
       }
