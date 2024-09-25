@@ -1,9 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import axios from 'axios';
 
 const nuevaContrasena = ref('');
 const errorMessage = ref('');
 const isLoading = ref(false);
+const isModalVisible = ref(true);
+const userRole = ref('');
 
 const isPasswordValid = computed(() => {
   const password = nuevaContrasena.value;
@@ -25,13 +28,29 @@ const cambiarContrasena = async () => {
   errorMessage.value = '';
 
   try {
-    // Simulación de encriptación y envío al backend
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const encodedPassword = window.btoa(nuevaContrasena.value);
+    
+    const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
+    const uri = '/update-password'; // Ajusta esta ruta según tu API
+    
+    const headers = {
+      'Content-Type': 'application/json',
+      // Asume que tienes un token de autenticación almacenado
+      'Authorization': `Bearer ${localStorage.getItem('token')}` 
+    };
 
-    // Simular respuesta exitosa
-    console.log("Contraseña cambiada:", nuevaContrasena.value);
-    alert("Contraseña cambiada con éxito");
-    nuevaContrasena.value = '';
+    const response = await axios.put(baseUri + uri, 
+      { password: encodedPassword },
+      { headers, withCredentials: true }
+    );
+
+    if (response.status === 200) {
+      alert("Contraseña cambiada con éxito");
+      nuevaContrasena.value = '';
+      isModalVisible.value = false; // Cierra el modal después de cambiar la contraseña
+    } else {
+      throw new Error('La respuesta del servidor no fue exitosa');
+    }
   } catch (error) {
     console.error("Error al cambiar la contraseña:", error);
     errorMessage.value = "Error al cambiar la contraseña. Intente nuevamente.";
@@ -39,35 +58,59 @@ const cambiarContrasena = async () => {
     isLoading.value = false;
   }
 };
+
+const checkUserRole = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA}/salesmen`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    userRole.value = response.data.role;
+    if (userRole.value === 'SALESMAN') {
+      isModalVisible.value = true;
+    }
+  } catch (error) {
+    console.error("Error al obtener el rol del usuario:", error);
+  }
+};
+
+onMounted(() => {
+  checkUserRole();
+});
 </script>
 
 <template>
   <main>
-    <div class="form">
-      <h2>Modificar contraseña:</h2>
-      <form @submit.prevent="cambiarContrasena">
-        <div class="form-group">
-          <label for="nuevaContrasena">Nueva Contraseña:</label>
-          <input 
-            type="password" 
-            id="nuevaContrasena" 
-            v-model="nuevaContrasena" 
-            required
-          />
+    <div v-if="isModalVisible" class="modal">
+      <div class="modal-content">
+        <h2>Cambio de contraseña </h2>
+        <div class="form">
+          <form @submit.prevent="cambiarContrasena">
+            <div class="form-group">
+              <label for="nuevaContrasena">Nueva Contraseña:</label>
+              <input 
+                type="password" 
+                id="nuevaContrasena" 
+                v-model="nuevaContrasena" 
+                required
+              />
+            </div>
+            
+            <div v-if="!isPasswordValid && nuevaContrasena" class="error-message">
+              La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos
+            </div>
+            <div class="button-container">
+              <button type="submit" :disabled="!canSubmit">
+                {{ isLoading ? 'Cambiando...' : 'Cambiar' }}
+              </button>
+            </div>
+            <div v-if="errorMessage" class="error-message">
+              {{ errorMessage }}
+            </div>
+          </form>
         </div>
-        
-        <div v-if="!isPasswordValid && nuevaContrasena" class="error-message">
-          La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos
-        </div>
-        <div class="button-container">
-          <button type="submit" :disabled="!canSubmit">
-            {{ isLoading ? 'Cambiando...' : 'Cambiar' }}
-          </button>
-        </div>
-        <div v-if="errorMessage" class="error-message">
-          {{ errorMessage }}
-        </div>
-      </form>
+      </div>
     </div>
   </main>
 </template>
@@ -79,12 +122,28 @@ main {
   font-family: "Jomolhari", serif;
 }
 
-.form {
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
   background-color: #D9D9D9;
-  width: 400px;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 400px;
+}
+
+.form {
+  width: 100%;
 }
 
 .form-group {
