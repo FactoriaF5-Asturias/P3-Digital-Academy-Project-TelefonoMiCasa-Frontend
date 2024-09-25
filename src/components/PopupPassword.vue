@@ -1,12 +1,14 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 
 const nuevaContrasena = ref('');
 const errorMessage = ref('');
 const isLoading = ref(false);
 const isModalVisible = ref(true);
-const userRole = ref('');
+
+// Obtener el ID del vendedor del localStorage
+const userId = localStorage.getItem('currentUserId');
 
 const isPasswordValid = computed(() => {
   const password = nuevaContrasena.value;
@@ -31,23 +33,22 @@ const cambiarContrasena = async () => {
     const encodedPassword = window.btoa(nuevaContrasena.value);
     
     const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
-    const uri = '/update-password'; // Ajusta esta ruta según tu API
+    const uri = `/salesmen/${userId}/update-password`; // Usa el userId obtenido del localStorage
     
     const headers = {
       'Content-Type': 'application/json',
-      // Asume que tienes un token de autenticación almacenado
-      'Authorization': `Bearer ${localStorage.getItem('token')}` 
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     };
 
     const response = await axios.put(baseUri + uri, 
-      { password: encodedPassword },
+      { encryptedPassword: encodedPassword }, // Asegúrate de que el nombre del parámetro sea correcto
       { headers, withCredentials: true }
     );
 
     if (response.status === 200) {
       alert("Contraseña cambiada con éxito");
       nuevaContrasena.value = '';
-      isModalVisible.value = false; // Cierra el modal después de cambiar la contraseña
+      isModalVisible.value = false;
     } else {
       throw new Error('La respuesta del servidor no fue exitosa');
     }
@@ -58,27 +59,8 @@ const cambiarContrasena = async () => {
     isLoading.value = false;
   }
 };
-
-const checkUserRole = async () => {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA}/salesmen`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-    userRole.value = response.data.role;
-    if (userRole.value === 'SALESMAN') {
-      isModalVisible.value = true;
-    }
-  } catch (error) {
-    console.error("Error al obtener el rol del usuario:", error);
-  }
-};
-
-onMounted(() => {
-  checkUserRole();
-});
 </script>
+
 
 <template>
   <main>
