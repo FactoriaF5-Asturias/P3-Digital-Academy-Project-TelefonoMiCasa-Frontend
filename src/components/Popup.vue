@@ -2,6 +2,9 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import SalesmenList from './SalesmenList.vue';
+import { useSalesmenStore } from '../stores/salesmen.js';
+
+const salesmenStore = useSalesmenStore();
 
 const email = ref('');
 const password = ref('');
@@ -15,7 +18,6 @@ const handleSubmit = async () => {
     const encodedPassword = window.btoa(password.value);
    
     await createSalesman(email.value, encodedPassword);
-    await fetchSalesmen();
    
     email.value = '';
     password.value = '';
@@ -49,6 +51,7 @@ async function createSalesman(username, password) {
    
     message.value = 'Vendedor creado exitosamente';
     isSuccess.value = true;
+    salesmenStore.loadSalesmen();
 
   } catch (error) {
     message.value = 'Error creando el vendedor, inténtalo nuevamente';
@@ -57,25 +60,9 @@ async function createSalesman(username, password) {
   }
 }
 
-async function fetchSalesmen() {
-  try {
-    const response = await axios.get('http://localhost:8080/api/v1/salesmen', {
-      withCredentials: true
-    });
-
-    console.log(response.status);
-    console.log(response.data);
-    
-    salesmen.value = response.data;
-  } catch (error) {
-    console.error('Error fetching salesmen:', error);
-  }
-}
-
-
 const closePopup = () => {
   isPopupVisible.value = false;
-  fetchSalesmen()
+  //fetchSalesmen()
 };
 </script>
 
