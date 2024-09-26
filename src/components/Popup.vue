@@ -1,36 +1,38 @@
 <script setup>
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
+import SalesmenList from './SalesmenList.vue';
 
 const email = ref('');
 const password = ref('');
 const salesmen = ref([]);
-const message = ref(''); 
-const isSuccess = ref(false); 
-const isPopupVisible = ref(true); 
+const message = ref('');
+const isSuccess = ref(false);
+const isPopupVisible = ref(true);
 
 const handleSubmit = async () => {
   if (email.value && password.value) {
     const encodedPassword = window.btoa(password.value);
    
     await createSalesman(email.value, encodedPassword);
-    
+    await fetchSalesmen();
+   
     email.value = '';
     password.value = '';
   } else {
     message.value = 'Por favor completa ambos campos correctamente';
-    isSuccess.value = false; 
+    isSuccess.value = false;
   }
 };
 
 async function createSalesman(username, password) {
-  try { 
+  try {
     const headers = {
       'Content-Type': 'application/json',
       'username': username,
       'password': password
     };
-    
+   
     const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
     const uri = '/salesmen';
 
@@ -44,9 +46,9 @@ async function createSalesman(username, password) {
     if (response.status != 200) {
       throw new Error('Network response was not ok');
     }
-    
+   
     message.value = 'Vendedor creado exitosamente';
-    isSuccess.value = true; 
+    isSuccess.value = true;
 
   } catch (error) {
     message.value = 'Error creando el vendedor, inténtalo nuevamente';
@@ -57,23 +59,23 @@ async function createSalesman(username, password) {
 
 async function fetchSalesmen() {
   try {
-    const response = await fetch('http://localhost:8080/api/v1/salesmen');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+    const response = await axios.get('http://localhost:8080/api/v1/salesmen', {
+      withCredentials: true
+    });
 
-    salesmen.value = await response.json();
+    console.log(response.status);
+    console.log(response.data);
+    
+    salesmen.value = response.data;
   } catch (error) {
     console.error('Error fetching salesmen:', error);
   }
 }
 
-onMounted(() => {
- 
-});
 
 const closePopup = () => {
-  isPopupVisible.value = false; 
+  isPopupVisible.value = false;
+  fetchSalesmen()
 };
 </script>
 
@@ -84,7 +86,7 @@ const closePopup = () => {
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-12 col-md-8 col-lg-6 col-xl-5">
             <div class="card shadow-2-strong login-card">
-              
+             
               <button @click="closePopup" class="close-btn">X</button>
 
               <div class="card-body p-6 text-right">
@@ -102,12 +104,11 @@ const closePopup = () => {
                   <button class="btn btn-primary btn-lg centered-btn" type="submit">Añadir</button>
                 </form>
 
-                
+
                 <div v-if="message" :class="isSuccess ? 'success-message' : 'error-message'" class="mt-3">
                   {{ message }}
                 </div>
 
-                
               </div>
             </div>
           </div>
@@ -119,17 +120,16 @@ const closePopup = () => {
 
 <style scoped>
 .login-section {
-  background-color: white;
+  background-color: rgba(255 255 255 0.0);
 }
 
 .login-card {
-  position: relative; /* Añadir para que el botón de cerrar esté dentro de la tarjeta */
+  position: relative;
   border-radius: 1rem;
   background-color: #650000;
   font-family: "Jomolhari", serif;
 }
 
-/* Estilos para el botón de cerrar */
 .close-btn {
   position: absolute;
   top: 10px;
@@ -177,7 +177,6 @@ button.btn-primary:hover {
   background-color: #f59fae;
 }
 
-/* Estilos para los mensajes de éxito y error */
 .success-message {
   color: green;
 }
