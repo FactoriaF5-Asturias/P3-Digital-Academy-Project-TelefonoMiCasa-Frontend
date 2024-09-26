@@ -1,66 +1,101 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 
 const nuevaContrasena = ref('');
 const errorMessage = ref('');
 const isLoading = ref(false);
 const isModalVisible = ref(true);
-
-// Obtener el ID del vendedor del localStorage
-const userId = localStorage.getItem('currentUserId');
+const userIds = ref([]); // Almacenar los IDs de los usuarios con el rol "SALESMAN"
 
 const isPasswordValid = computed(() => {
   const password = nuevaContrasena.value;
-  return password.length >= 8 && 
-         /[A-Z]/.test(password) && 
-         /[a-z]/.test(password) && 
-         /[0-9]/.test(password) && 
-         /[^A-Za-z0-9]/.test(password);
+  return (
+    password.length >= 8 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[0-9]/.test(password) &&
+    /[^A-Za-z0-9]/.test(password)
+  );
 });
 
-const canSubmit = computed(() => 
-  isPasswordValid.value && !isLoading.value
-);
+const canSubmit = computed(() => isPasswordValid.value && !isLoading.value);
 
-const cambiarContrasena = async () => {
-  if (!canSubmit.value) return;
+const obtenerUsuariosSalesman = async () => {
+  const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
+  const uri = `/salesmen`; // Endpoint para obtener todos los usuarios con el rol "SALESMAN"
+
+  try {
+    const response = await axios.get(baseUri + uri, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      withCredentials: true,
+    });
+
+    if (response.status === 200) {
+      userIds.value = response.data.map(user => user.id); // Asume que la respuesta contiene una lista de usuarios con sus IDs
+    } else {
+      throw new Error('La respuesta del servidor no fue exitosa');
+    }
+  } catch (error) {
+    console.error('Error al obtener los usuarios con el rol "SALESMAN":', error.response ? error.response.data : error.message);
+    errorMessage.value = error.response ? error.response.data.error : 'Error al obtener los usuarios. Intente nuevamente.';
+  }
+};
+
+const cambiarContrasena = async (userId) => {
+  if (!canSubmit.value || !userId) {
+    console.error('No se puede cambiar la contraseña: userId es inválido');
+    return;
+  }
 
   isLoading.value = true;
   errorMessage.value = '';
 
   try {
     const encodedPassword = window.btoa(nuevaContrasena.value);
-    
     const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
-    const uri = `/salesmen/${userId}/update-password`; // Usa el userId obtenido del localStorage
-    
+    const uri = `/salesmen/${userId}/update-password`; // Usar userId en la URL
+
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'encryptedPassword': encodedPassword, // Enviar encryptedPassword como encabezado
     };
 
-    const response = await axios.put(baseUri + uri, 
-      { encryptedPassword: encodedPassword }, // Asegúrate de que el nombre del parámetro sea correcto
+    const response = await axios.put(
+      baseUri + uri,
+      {}, // No enviar datos en el cuerpo
       { headers, withCredentials: true }
     );
 
     if (response.status === 200) {
-      alert("Contraseña cambiada con éxito");
-      nuevaContrasena.value = '';
-      isModalVisible.value = false;
+      console.log(`Contraseña cambiada con éxito para el usuario ${userId}`);
     } else {
       throw new Error('La respuesta del servidor no fue exitosa');
     }
   } catch (error) {
-    console.error("Error al cambiar la contraseña:", error);
-    errorMessage.value = "Error al cambiar la contraseña. Intente nuevamente.";
+    console.error(`Error al cambiar la contraseña para el usuario ${userId}:`, error.response ? error.response.data : error.message);
+    errorMessage.value = error.response ? error.response.data.error : 'Error al cambiar la contraseña. Intente nuevamente.';
   } finally {
     isLoading.value = false;
   }
 };
-</script>
 
+// Establecer los userIds cuando el componente se monta
+onMounted(async () => {
+  await obtenerUsuariosSalesman(); // Obtener los IDs de los usuarios con el rol "SALESMAN"
+  console.log(userIds.value); // Verifica que los IDs se hayan establecido correctamente
+});
+
+// Función para cambiar la contraseña para todos los usuarios
+const cambiarContrasenaParaTodos = async () => {
+  for (const userId of userIds.value) {
+    await cambiarContrasena(userId);
+  }
+};
+</script>
 
 <template>
   <main>
@@ -68,7 +103,7 @@ const cambiarContrasena = async () => {
       <div class="modal-content">
         <h2>Cambio de contraseña </h2>
         <div class="form">
-          <form @submit.prevent="cambiarContrasena">
+          <form @submit.prevent="cambiarContrasenaParaTodos">
             <div class="form-group">
               <label for="nuevaContrasena">Nueva Contraseña:</label>
               <input 
@@ -84,7 +119,7 @@ const cambiarContrasena = async () => {
             </div>
             <div class="button-container">
               <button type="submit" :disabled="!canSubmit">
-                {{ isLoading ? 'Cambiando...' : 'Cambiar' }}
+                {{ isLoading ? 'Cambiando...' : 'Cambiar para todos' }}
               </button>
             </div>
             <div v-if="errorMessage" class="error-message">
@@ -96,6 +131,9 @@ const cambiarContrasena = async () => {
     </div>
   </main>
 </template>
+
+
+
 
 <style scoped>
 main {
