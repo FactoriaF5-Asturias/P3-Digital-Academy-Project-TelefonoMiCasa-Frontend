@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
@@ -8,7 +8,6 @@ const errorMessage = ref('');
 const successMessage = ref('');
 const isLoading = ref(false);
 const isModalVisible = ref(true);
-const salesmenIds = ref([]); 
 const router = useRouter();
 
 const isPasswordValid = computed(() => {
@@ -24,34 +23,9 @@ const isPasswordValid = computed(() => {
 
 const canSubmit = computed(() => isPasswordValid.value && !isLoading.value);
 
-const obtenerUsuariosSalesman = async () => {
-  const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
-  const uri = `/salesmen`;
-
-  try {
-    const response = await axios.get(baseUri + uri, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      withCredentials: true,
-    });
-
-    if (response.status === 200) {
-      salesmenIds.value = response.data
-        .filter(user => user.roles.some(role => role.id === user.id))
-        .map(user => user.id);
-    } else {
-      throw new Error('La respuesta del servidor no fue exitosa');
-    }
-  } catch (error) {
-    console.error('Error al obtener los usuarios con el rol "SALESMAN":', error.response ? error.response.data : error.message);
-    errorMessage.value = error.response ? error.response.data.error : 'Error al obtener los usuarios. Intente nuevamente.';
-  }
-};
-
-const cambiarContrasena = async (userId) => {
-  if (!canSubmit.value || !userId) {
-    console.error('No se puede cambiar la contraseña: userId es inválido');
+const cambiarContrasena = async () => {
+  if (!canSubmit.value) {
+    console.error('No se puede cambiar la contraseña: contraseña inválida');
     return;
   }
 
@@ -59,9 +33,9 @@ const cambiarContrasena = async (userId) => {
   errorMessage.value = '';
 
   try {
-    const encodedPassword = nuevaContrasena.value;
+    const encodedPassword = btoa(nuevaContrasena.value); // Codifica la contraseña en Base64
     const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
-    const uri = `/salesmen/${userId}/update-password`;
+    const uri = `/salesmen/update-password`; // Removido 'api/v1' de aquí
 
     const headers = {
       'Content-Type': 'application/json',
@@ -70,41 +44,28 @@ const cambiarContrasena = async (userId) => {
     };
 
     const response = await axios.put(
-      baseUri + uri,
+      `${baseUri}${uri}`, // Usamos template literal para mayor claridad
       {},
       { headers, withCredentials: true }
     );
 
     if (response.status === 200) {
-      console.log(`Contraseña cambiada con éxito para el usuario ${userId}`);
+      successMessage.value = 'Contraseña cambiada con éxito.';
+      nuevaContrasena.value = ''; 
+      setTimeout(() => {
+        successMessage.value = '';
+        localStorage.removeItem('token');
+        router.push({ path: '/' });
+      }, 3000);
     } else {
       throw new Error('La respuesta del servidor no fue exitosa');
     }
   } catch (error) {
-    console.error(`Error al cambiar la contraseña para el usuario ${userId}:`, error.response ? error.response.data : error.message);
+    console.error('Error al cambiar la contraseña:', error.response ? error.response.data : error.message);
     errorMessage.value = error.response ? error.response.data.error : 'Error al cambiar la contraseña. Intente nuevamente.';
   } finally {
     isLoading.value = false;
   }
-};
-
-onMounted(async () => {
-  await obtenerUsuariosSalesman();
-  console.log(salesmenIds.value);
-});
-
-const cambiarContrasenaParaTodos = async () => {
-  for (const userId of salesmenIds.value) {
-    await cambiarContrasena(userId);
-  }
-
-  successMessage.value = 'Contraseñas cambiadas con éxito para todos los usuarios.';
-  nuevaContrasena.value = ''; 
-  setTimeout(() => {
-    successMessage.value = ''; // Limpiar el mensaje de éxito después de 3 segundos
-    localStorage.removeItem('token');
-    router.push({ path: '/' });
-  }, 3000);
 };
 </script>
 
@@ -114,7 +75,7 @@ const cambiarContrasenaParaTodos = async () => {
       <div class="modal-content">
         <h2>Cambio de contraseña</h2>
         <div class="form">
-          <form @submit.prevent="cambiarContrasenaParaTodos">
+          <form @submit.prevent="cambiarContrasena">
             <div class="form-group">
               <label for="nuevaContrasena">Nueva Contraseña:</label>
               <input 
@@ -122,6 +83,7 @@ const cambiarContrasenaParaTodos = async () => {
                 id="nuevaContrasena" 
                 v-model="nuevaContrasena" 
                 required
+                autocomplete="new-password"
               />
             </div>
             
@@ -130,7 +92,7 @@ const cambiarContrasenaParaTodos = async () => {
             </div>
             <div class="button-container">
               <button type="submit" :disabled="!canSubmit">
-                {{ isLoading ? 'Cambiando...' : 'Cambiar para todos' }}
+                {{ isLoading ? 'Cambiando...' : 'Cambiar contraseña' }}
               </button>
             </div>
             <div v-if="errorMessage" class="error-message">
