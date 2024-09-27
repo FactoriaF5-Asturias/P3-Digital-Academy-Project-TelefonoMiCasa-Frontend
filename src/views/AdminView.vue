@@ -9,7 +9,7 @@ import Cards from '@/components/Cards.vue';
 </script>
 <template>
   <main>
-    <h1>Admin view</h1>
+    <h1>Lista de comerciales</h1>
     <Button/>
   </main>
 </template>
