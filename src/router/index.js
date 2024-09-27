@@ -23,6 +23,9 @@ const router = createRouter({
       name: 'adminview',
       component: () => import('../views/AdminView.vue')
     },
+
+  
+
      {
       path: '/public',
       name: 'Public',
