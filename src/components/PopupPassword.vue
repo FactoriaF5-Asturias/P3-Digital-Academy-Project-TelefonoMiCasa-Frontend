@@ -1,12 +1,15 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 
 const nuevaContrasena = ref('');
 const errorMessage = ref('');
+const successMessage = ref('');
 const isLoading = ref(false);
 const isModalVisible = ref(true);
-const userIds = ref([]); // Almacenar los IDs de los usuarios con el rol "SALESMAN"
+const salesmenIds = ref([]); 
+const router = useRouter();
 
 const isPasswordValid = computed(() => {
   const password = nuevaContrasena.value;
@@ -23,7 +26,7 @@ const canSubmit = computed(() => isPasswordValid.value && !isLoading.value);
 
 const obtenerUsuariosSalesman = async () => {
   const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
-  const uri = `/salesmen`; // Endpoint para obtener todos los usuarios con el rol "SALESMAN"
+  const uri = `/salesmen`;
 
   try {
     const response = await axios.get(baseUri + uri, {
@@ -34,7 +37,9 @@ const obtenerUsuariosSalesman = async () => {
     });
 
     if (response.status === 200) {
-      userIds.value = response.data.map(user => user.id); // Asume que la respuesta contiene una lista de usuarios con sus IDs
+      salesmenIds.value = response.data
+        .filter(user => user.roles.some(role => role.id === user.id))
+        .map(user => user.id);
     } else {
       throw new Error('La respuesta del servidor no fue exitosa');
     }
@@ -54,19 +59,19 @@ const cambiarContrasena = async (userId) => {
   errorMessage.value = '';
 
   try {
-    const encodedPassword = window.btoa(nuevaContrasena.value);
+    const encodedPassword = nuevaContrasena.value;
     const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
-    const uri = `/salesmen/${userId}/update-password`; // Usar userId en la URL
+    const uri = `/salesmen/${userId}/update-password`;
 
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'encryptedPassword': encodedPassword, // Enviar encryptedPassword como encabezado
+      'encryptedPassword': encodedPassword,
     };
 
     const response = await axios.put(
       baseUri + uri,
-      {}, // No enviar datos en el cuerpo
+      {},
       { headers, withCredentials: true }
     );
 
@@ -83,17 +88,23 @@ const cambiarContrasena = async (userId) => {
   }
 };
 
-// Establecer los userIds cuando el componente se monta
 onMounted(async () => {
-  await obtenerUsuariosSalesman(); // Obtener los IDs de los usuarios con el rol "SALESMAN"
-  console.log(userIds.value); // Verifica que los IDs se hayan establecido correctamente
+  await obtenerUsuariosSalesman();
+  console.log(salesmenIds.value);
 });
 
-// Función para cambiar la contraseña para todos los usuarios
 const cambiarContrasenaParaTodos = async () => {
-  for (const userId of userIds.value) {
+  for (const userId of salesmenIds.value) {
     await cambiarContrasena(userId);
   }
+
+  successMessage.value = 'Contraseñas cambiadas con éxito para todos los usuarios.';
+  nuevaContrasena.value = ''; 
+  setTimeout(() => {
+    successMessage.value = ''; // Limpiar el mensaje de éxito después de 3 segundos
+    localStorage.removeItem('token');
+    router.push({ path: '/' });
+  }, 3000);
 };
 </script>
 
@@ -101,7 +112,7 @@ const cambiarContrasenaParaTodos = async () => {
   <main>
     <div v-if="isModalVisible" class="modal">
       <div class="modal-content">
-        <h2>Cambio de contraseña </h2>
+        <h2>Cambio de contraseña</h2>
         <div class="form">
           <form @submit.prevent="cambiarContrasenaParaTodos">
             <div class="form-group">
@@ -124,6 +135,9 @@ const cambiarContrasenaParaTodos = async () => {
             </div>
             <div v-if="errorMessage" class="error-message">
               {{ errorMessage }}
+            </div>
+            <div v-if="successMessage" class="success-message">
+              {{ successMessage }}
             </div>
           </form>
         </div>
