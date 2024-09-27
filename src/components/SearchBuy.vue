@@ -1,11 +1,15 @@
-<script setup>
+
+
+ <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSearchStore } from '../stores/searchStore.js';
 
+
 const query = ref('');
 const isVentaSelected = ref(false);
 const isAlquilerSelected = ref(false);
+const selectedPropertyType = ref(''); 
 const searchStore = useSearchStore();
 const router = useRouter();
 
@@ -25,25 +29,38 @@ const selectAlquiler = () => {
 
 const searchProperties = async () => {
     if (isVentaSelected.value) {
-        await searchStore.searchProperties('venta');
-        router.push({ path: '/public', query: { action: 'venta' } });
+        await searchStore.searchProperties('venta, selectedPropertyType.value');
+        router.push({ path: '/public', query: { action: 'venta', type:selectedPropertyType.value } });
     } else if (isAlquilerSelected.value) {
         await searchStore.searchProperties('alquiler');
-        router.push({ path: '/public', query: { action: 'alquiler' } });
+        router.push({ path: '/public', query: { action: 'alquiler', type:selectedPropertyType.value  } });
     } else {
         alert('Por favor, seleccione "Venta" o "Alquiler" antes de buscar.');
     }
 };
 </script>
+
 <template>
     <div class="container-fluid">
         <div class="search-bar d-flex justify-content-between align-items-center p-4 m-5">
-            <button class="btn btn-secondary" @click="selectVenta"
+            <button id="ventaButton" class="btn btn-secondary" @click="selectVenta"
                 :class="{ 'selected': isVentaSelected }">Comprar</button>
-            <button class="btn btn-secondary  " @click="selectAlquiler"
+            <button id="alquilerButton" class="btn btn-secondary" @click="selectAlquiler"
                 :class="{ 'selected': isAlquilerSelected }">Alquilar</button>
+
+                <select 
+  v-model="selectedPropertyType" 
+  :class="['btn', 'btn-secondary', { selected: selectedPropertyType !== '' }]"
+>
+    <option value="" disabled selected>Tipo</option>
+    <option value="casa">Casa</option>
+    <option value="piso">Piso</option>
+    <option value="trastero">Trastero</option>
+</select>
             <input v-model="query" class="form-control mx-1" placeholder="Buscar propiedades..." />
             <button class="btn btn-secondary" @click="searchProperties">Buscar</button>
+
+           
         </div>
     </div>
 </template>
@@ -55,6 +72,8 @@ const searchProperties = async () => {
     gap: 20px;
 }
 
+
+
 input {
    
     height: 90px;
@@ -65,6 +84,10 @@ input {
       
 }
 
+select.btn-secondary option:hover {
+    background-color: #800000; /* Granate */
+    color: white; /* Color del texto dentro de la opción al hacer hover */
+}
 
 .btn-secondary {
     background-color: #D9D9D9;
@@ -81,6 +104,8 @@ input {
     color: white;
     
 }
+
+
 
 .form-control {
     border: 1px solid #D9D9D9;
