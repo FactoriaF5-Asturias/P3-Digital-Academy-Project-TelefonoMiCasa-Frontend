@@ -120,12 +120,12 @@ defineExpose({ openPopup });
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="loginName">Usuario</label>
-                <input type="user" v-model="loginName" id="loginName" class="form-control" />
+                <input type="user" v-model="loginName" id="loginName" class="form-control"  placeholder="Introduzca su Email..."/>
               </div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="loginPassword">Contraseña</label>
-                <input type="password" v-model="loginPassword" id="loginPassword" class="form-control" />
+                <input type="password" v-model="loginPassword" id="loginPassword" class="form-control"  placeholder="Introduzca su contraseña..."/>
               </div>
 
               <div class="button-container">
