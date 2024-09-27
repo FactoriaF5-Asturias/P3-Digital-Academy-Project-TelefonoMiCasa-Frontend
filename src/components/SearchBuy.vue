@@ -129,6 +129,11 @@ input {
         padding: 10px 20px;
         font-size: 1rem;
     }
+    
+    ::placeholder {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
 
     input {
         height: 40px;
