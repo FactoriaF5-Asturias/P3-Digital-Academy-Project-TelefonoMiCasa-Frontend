@@ -15,8 +15,6 @@ const closePopup = () => {
 const buttonClasses = computed(() => "flex items-center bg-zinc-200 text-black border border-zinc-400 rounded-full px-4 py-2 hover:bg-zinc-300");
 </script>
 
-
-
 <template>
   <div class="flex items-center">
     <button @click="openPopup" :class="buttonClasses">
