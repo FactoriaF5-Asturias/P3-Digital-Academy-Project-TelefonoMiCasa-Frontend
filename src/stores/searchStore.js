@@ -1,3 +1,5 @@
+
+
 import { defineStore } from 'pinia';
 import SearchService from '../core/apis/property/SearchService';
 import SearchRepository from '../core/apis/property/SearchRepository';
@@ -10,11 +12,11 @@ export const useSearchStore = defineStore('search', {
         error: null
     }),
     actions: {
-        async searchProperties(action) {
+        async searchProperties(type, action) {
             this.loading = true;
             this.error = null;
             try {
-                const result = await searchService.search(action);
+                const result = await searchService.search(type, action);
                 this.properties = result;
             } catch (error) {
                 this.error = 'Error fetching properties. Please try again later.';

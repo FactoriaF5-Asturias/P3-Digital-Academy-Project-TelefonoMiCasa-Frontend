@@ -1,8 +1,10 @@
+
+
 <script setup>
+
 import { onMounted, ref } from 'vue';
 import { useSearchStore } from '../stores/searchStore';
 import { useRoute } from 'vue-router';
-
 const route = useRoute();
 const searchStore = useSearchStore();
 const properties = ref([]);
@@ -12,22 +14,20 @@ const floorIcon = '/src/assets/icons/Building.svg';
 const bathroomIcon = '/src/assets/icons/Bathtub.svg';
 const areaIcon = '/src/assets/icons/planos.svg';
 const maps = '/src/assets/icons/maps.svg';
-const house = '/src/assets/images/house.jpg';
-
-onMounted(async () => {
-  const action = route.query.action || 'venta'; // 'venta' es el valor por defecto
-  await searchStore.searchProperties(action);
-  properties.value = searchStore.properties;
+const defaultImage = 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg';
+onMounted(() => {
+  properties.value = searchStore.properties; 
 });
 
 </script>
+
 <template>
   <div class="properties-list">
-    <div v-if="!loading && properties.length === 0" class="no-results">No hay propiedades disponibles para la búsqueda seleccionada.</div>
-
+    <div v-if="searchStore.loading" class="loading">Cargando propiedades...</div>
+    <div v-if="!searchStore.loading && properties.length === 0" class="no-results">No hay propiedades disponibles para la búsqueda seleccionada.</div>
     <div v-for="(property, index) in properties" :key="index" class="card">
       <div class="image-container">
-        <img :src="property.house || 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg'" alt="Property Image" class="property-image" />
+        <img :src="property.house || defaultImage" alt="Property Image" class="property-image" />
       </div>
       <div class="content">
         <h2 class="price">{{ property.price }}</h2>
@@ -43,7 +43,7 @@ onMounted(async () => {
           </div>
           <div class="feature">
             <img :src="elevatorIcon" alt="Elevator Icon" class="icon" />
-            <span>{{ property.elevator || 'No' }}</span>
+            <span>{{ property.elevator ? 'Sí' : 'No' }}</span>
           </div>
           <div class="feature">
             <img :src="floorIcon" alt="Floor Icon" class="icon" />
@@ -61,11 +61,8 @@ onMounted(async () => {
         <div class="actions">
           <button class="schedule-visit">Agendar visita</button>
           <button class="favorite">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-              </path>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </button>
         </div>
@@ -73,90 +70,76 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+<style scoped>
 
-
-
+</style>
 <style scoped>
 .properties-list {
 margin-top: 30px;
 margin-left: 20px;
-
   display: grid;
   grid-template-columns: repeat(2, 3fr);
   gap: 20px;
   justify-content: center;
   grid-template-columns: 600px 400px;
 }
-
 .card {
   display: flex;
-  background-color: #fffbbb;
+  background-color: #FFFBBB;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 580px;
   height: 300px;
   flex-direction: row;
-  
 }
-
 .image-container {
   flex: 1;
   max-width: 50%;
 }
-
 .property-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   padding: 20px;
 }
-
 .content {
-  
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
-
 .price {
   font-size: 24px;
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
 }
-
 .description {
   font-size: 14px;
   color: #666;
   margin-bottom: 15px;
 }
-
 .address {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
 }
-
 .features {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin-bottom: 20px;
 }
-
 .feature {
   display: flex;
   align-items: center;
 }
-
 .icon {
   width: 30px;
   height: 30px;
   margin-right: 5px;
 }
-
 .actions {
   display: flex;
   justify-content: space-between;
@@ -178,78 +161,63 @@ margin-left: 20px;
   cursor: pointer;
   font-weight: bold;
 }
-
 .favorite {
   background: none;
   border: none;
   cursor: pointer;
 }
-
 .heart-icon {
   width: 24px;
   height: 24px;
   stroke: #999;
 }
-
 @media (max-width: 768px) {
   .properties-list {
     grid-template-columns: 1fr;
   }
-
   .card {
     width: 100%;
     flex-direction: column;
     height: auto;
   }
-
   .property-image {
     padding: 20px;
    width: 350px;
   }
-
   .content {
     padding: 10px;
   }
-
   .price {
     font-size: 20px;
   }
-
   .description {
     font-size: 12px;
   }
-
   .features {
     grid-template-columns: repeat(2, 1fr);
     gap: 5px;
   }
-
   .icon {
     width: 30px;
     height: 30px;
   }
-
   .schedule-visit {
     padding: 8px 16px;
     font-size: 14px;
   }
 }
-
 @media (max-width: 480px) {
   .features {
     grid-template-columns: 1fr;
   }
-
   .icon {
     width: 25px;
     height: 25px;
   }
-
   .schedule-visit {
     width: 100%;
     text-align: center;
   }
-
   .favorite {
     display: block;
     margin-top: 10px;
@@ -262,4 +230,3 @@ margin-left: 20px;
   margin-top: 20px;
 }
 </style>
-
