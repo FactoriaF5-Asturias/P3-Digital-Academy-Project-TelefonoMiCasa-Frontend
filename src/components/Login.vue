@@ -269,4 +269,20 @@ input{
 .login-box label {
   text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.50);
 }
+
+::placeholder{
+  font-size: 1.5rem;
+}
+
+@media (max-width: 780px) {
+ ::placeholder{
+  font-size: 1rem;
+ } 
+}
+
+@media (max-width: 480px) {
+ ::placeholder{
+  font-size: 0.8rem;
+ }
+}
 </style>
