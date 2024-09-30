@@ -8,6 +8,7 @@ const errorMessage = ref('');
 const successMessage = ref('');
 const isLoading = ref(false);
 const isModalVisible = ref(true);
+const isPasswordChanged = ref(false); // Nueva variable para controlar si la contraseña fue cambiada
 const router = useRouter();
 
 const isPasswordValid = computed(() => {
@@ -33,9 +34,9 @@ const cambiarContrasena = async () => {
   errorMessage.value = '';
 
   try {
-    const encodedPassword = btoa(nuevaContrasena.value); // Codifica la contraseña en Base64
+    const encodedPassword = btoa(nuevaContrasena.value);
     const baseUri = import.meta.env.VITE_API_ENDPOINT_TELEFONOMICASA;
-    const uri = `/salesmen/update-password`; // Removido 'api/v1' de aquí
+    const uri = `/salesmen/update-password`;
 
     const headers = {
       'Content-Type': 'application/json',
@@ -44,14 +45,15 @@ const cambiarContrasena = async () => {
     };
 
     const response = await axios.put(
-      `${baseUri}${uri}`, // Usamos template literal para mayor claridad
+      `${baseUri}${uri}`,
       {},
       { headers, withCredentials: true }
     );
 
     if (response.status === 200) {
       successMessage.value = 'Contraseña cambiada con éxito.';
-      nuevaContrasena.value = ''; 
+      nuevaContrasena.value = '';
+      isPasswordChanged.value = true; // Marcamos que la contraseña fue cambiada
       setTimeout(() => {
         successMessage.value = '';
         localStorage.removeItem('token');
@@ -71,7 +73,7 @@ const cambiarContrasena = async () => {
 
 <template>
   <main>
-    <div v-if="isModalVisible" class="modal">
+    <div v-if="isModalVisible && !isPasswordChanged" class="modal">
       <div class="modal-content">
         <h2>Cambio de contraseña</h2>
         <div class="form">
@@ -108,10 +110,8 @@ const cambiarContrasena = async () => {
   </main>
 </template>
 
-
-
-
 <style scoped>
+/* El estilo permanece igual */
 main {
   display: flex;
   justify-content: center;
