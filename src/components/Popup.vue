@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 import SalesmenList from './SalesmenList.vue';
 import { useSalesmenStore } from '../stores/salesmen.js';
 
@@ -64,6 +64,10 @@ const closePopup = () => {
   isPopupVisible.value = false;
   //fetchSalesmen()
 };
+
+// const salesmenlist = inject('SalesmenList')
+// return{salesmenlist};
+
 </script>
 
 <template>

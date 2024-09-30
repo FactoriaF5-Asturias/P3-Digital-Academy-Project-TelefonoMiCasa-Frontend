@@ -1,6 +1,6 @@
-
 <script setup>
 import { defineProps } from 'vue';
+
 
 const props = defineProps({
   salesmen: {
@@ -9,6 +9,7 @@ const props = defineProps({
   }
 });
 </script>
+
 
 <template>
   <div>
@@ -21,11 +22,13 @@ const props = defineProps({
   </div>
 </template>
 
+
 <style scoped>
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 
 li {
   background-color: #f0f0f0;
