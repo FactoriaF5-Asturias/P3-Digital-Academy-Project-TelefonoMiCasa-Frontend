@@ -83,13 +83,13 @@ const closePopup = () => {
               <div class="card-body p-6 text-right">
                 <form @submit.prevent="handleSubmit">
                   <div class="form-outline mb-4">
-                    <p>Nombre:</p>
-                    <input v-model="email" type="email" id="typeEmailX-2" class="form-control form-control-lg" />
+                    <p>Email</p>
+                    <input v-model="email" type="email" id="typeEmailX-2" class="form-control form-control-lg"  placeholder="Introduzca un email..."/>
                   </div>
 
                   <div class="form-outline mb-4">
                     <p>Contraseña:</p>
-                    <input v-model="password" type="password" id="typePasswordX-2" class="form-control form-control-lg" />
+                    <input v-model="password" type="password" id="typePasswordX-2" class="form-control form-control-lg" placeholder="Introduzca una contraseña..."/>
                   </div>
 
                   <button class="btn btn-primary btn-lg centered-btn" type="submit">Añadir</button>
