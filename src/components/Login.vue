@@ -35,13 +35,24 @@ const openPopup = () => {
 
 const closePopup = () => {
   isOpen.value = false;
+  clearForm();
 };
 
 const setTab = (tab) => {
   currentTab.value = tab;
+  clearForm();
+};
+
+const clearForm = () => {
+  loginName.value = '';
+  loginPassword.value = '';
+  registerUsername.value = '';
+  registerPassword.value = '';
+  registerConfirmPassword.value = '';
   formErrorMessage.value = '';
   authErrorMessage.value = '';
   registerErrorMessage.value = '';
+  console.clear(); // Limpiar la consola
 };
 
 const isActiveTab = computed(() => {
@@ -62,8 +73,8 @@ const submitLogin = async () => {
 
       if (userRole === 'ROLE_ADMIN') {
         router.push('/adminview');  
-      } else if (userRole === 'ROLE_USER') {
-        router.push('/userview');  
+      } else if (userRole === 'ROLE_SALESMAN') {
+        router.push('/salesmanview');  
       } else {
         authErrorMessage.value = 'Rol no reconocido.';
       }
