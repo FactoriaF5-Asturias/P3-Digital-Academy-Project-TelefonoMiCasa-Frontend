@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PublicView from '@/views/PublicView.vue'
 import Login from '@/components/Login.vue'
+import SalesmenDashboardView from '@/views/SalesmenDashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,13 +25,20 @@ const router = createRouter({
       component: () => import('../views/AdminView.vue')
     },
 
-  
+ 
+
 
      {
       path: '/public',
       name: 'Public',
       component: PublicView
-    }
+    },
+
+    {
+      path: '/SalesmenDashboard',
+      name: 'salesmendashboard',
+      component: SalesmenDashboardView,
+    },
   ]
 })
 
