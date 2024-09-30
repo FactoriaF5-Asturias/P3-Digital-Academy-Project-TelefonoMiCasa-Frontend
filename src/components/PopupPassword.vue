@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
@@ -7,14 +7,12 @@ const nuevaContrasena = ref('');
 const errorMessage = ref('');
 const successMessage = ref('');
 const isLoading = ref(false);
-const isModalVisible = ref(true);
-const isPasswordChanged = ref(false); // Nueva variable para controlar si la contraseña fue cambiada
-const router = useRouter();
+const emit = defineEmits(); // Definimos los eventos a emitir
 
 const isPasswordValid = computed(() => {
   const password = nuevaContrasena.value;
   return (
-    password.length >= 8 &&
+    password.length >= 5 &&
     /[A-Z]/.test(password) &&
     /[a-z]/.test(password) &&
     /[0-9]/.test(password) &&
@@ -53,12 +51,7 @@ const cambiarContrasena = async () => {
     if (response.status === 200) {
       successMessage.value = 'Contraseña cambiada con éxito.';
       nuevaContrasena.value = '';
-      isPasswordChanged.value = true; // Marcamos que la contraseña fue cambiada
-      setTimeout(() => {
-        successMessage.value = '';
-        localStorage.removeItem('token');
-        router.push({ path: '/' });
-      }, 3000);
+      emit('password-changed'); // Emitir evento cuando la contraseña cambie
     } else {
       throw new Error('La respuesta del servidor no fue exitosa');
     }
@@ -73,7 +66,7 @@ const cambiarContrasena = async () => {
 
 <template>
   <main>
-    <div v-if="isModalVisible && !isPasswordChanged" class="modal">
+    <div class="modal">
       <div class="modal-content">
         <h2>Cambio de contraseña</h2>
         <div class="form">
@@ -111,7 +104,7 @@ const cambiarContrasena = async () => {
 </template>
 
 <style scoped>
-/* El estilo permanece igual */
+/* Estilo permanece igual */
 main {
   display: flex;
   justify-content: center;
