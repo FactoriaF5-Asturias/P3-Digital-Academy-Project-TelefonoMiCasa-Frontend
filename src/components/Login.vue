@@ -61,12 +61,15 @@ const submitLogin = async () => {
       const userRole = response.roles;  
 
       if (userRole === 'ROLE_ADMIN') {
-        router.push('/adminview');  
-      } else if (userRole === 'ROLE_USER') {
-        router.push('/userview');  
-      } else {
-        authErrorMessage.value = 'Rol no reconocido.';
-      }
+    router.push('/adminview');  
+} else if (userRole === 'ROLE_USER') {
+    router.push('/userview');  
+} else if (userRole === 'ROLE_SALESMAN') {
+    router.push('/salesmendashboardview');  
+} else {
+    authErrorMessage.value = 'Rol no reconocido.';
+}
+
       closePopup();
     } else {
       authErrorMessage.value = 'Error en la autenticación. Por favor, verifica tus credenciales.';

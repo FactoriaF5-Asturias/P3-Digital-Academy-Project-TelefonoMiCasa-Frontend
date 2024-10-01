@@ -1,11 +1,25 @@
 <script setup>
 import { ref } from 'vue';
-import AddInmuebleButton from './AddInmuebleButton.vue';
+
+
+import Salesmenformproperties from './Salesmenformproperties.vue';
+import AddIPropertiesButton from './AddIPropertiesButton.vue';
+
+
 
 const currentView = ref('');
+const isPopupVisible = ref(false); 
 
 const changeView = (view) => {
   currentView.value = view;
+};
+
+const showPopup = () => {
+  isPopupVisible.value = true;
+};
+
+const closePopup = () => {
+  isPopupVisible.value = false;
 };
 </script>
 
@@ -43,12 +57,11 @@ const changeView = (view) => {
     <div class="container mt-4">
       <h2 class="main-title">Panel de Control Comercial</h2>
 
-      <!-- Contenido dinámico según la vista seleccionada -->
       <div v-if="currentView === 'inmuebles'">
-        <!-- Contenedor para el título y el botón -->
         <div class="title-button-container">
           <h3 class="sub-title">Alta y Baja de Inmuebles</h3>
-          <AddInmuebleButton />
+          
+          <AddIPropertiesButton @add="showPopup" />
         </div>
       </div>
 
@@ -60,27 +73,25 @@ const changeView = (view) => {
         <h3 class="sub-title">Historial de Visitas Cliente</h3>
       </div>
     </div>
+
+    <Salesmenformproperties v-if="isPopupVisible" @close="closePopup" />
   </div>
 </template>
 
 <style scoped>
-
 .bg-granate {
   background-color: #800020;
 }
-
 
 .salesmen-dashboard {
   background-color: #ffffff;
   min-height: 100vh;
 }
 
-
 .main-title {
   font-size: 1.5rem;
   color: #800606;
 }
-
 
 .sub-title {
   font-size: 1.2rem;
@@ -89,8 +100,8 @@ const changeView = (view) => {
 
 .title-button-container {
   display: flex;
-  align-items: center; 
-  gap: 80px; 
+  align-items: center;
+  gap: 80px;
 }
 
 .container {
