@@ -1,10 +1,10 @@
-
-
 import { defineStore } from 'pinia';
 import SearchService from '../core/apis/property/SearchService';
 import SearchRepository from '../core/apis/property/SearchRepository';
+
 const repository = new SearchRepository();
 const searchService = new SearchService(repository);
+
 export const useSearchStore = defineStore('search', {
     state: () => ({
         properties: [],
@@ -12,11 +12,11 @@ export const useSearchStore = defineStore('search', {
         error: null
     }),
     actions: {
-        async searchProperties(type, action) {
+        async searchProperties(type, action, address) { 
             this.loading = true;
             this.error = null;
             try {
-                const result = await searchService.search(type, action);
+                const result = await searchService.search(type, action, address); 
                 this.properties = result;
             } catch (error) {
                 this.error = 'Error fetching properties. Please try again later.';
