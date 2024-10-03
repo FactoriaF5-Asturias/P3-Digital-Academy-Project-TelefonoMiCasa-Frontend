@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useSearchStore } from '../stores/searchStore.js';
 
 const query = ref('');
+const address = ref(''); 
 const isVentaSelected = ref(false); 
 const isAlquilerSelected = ref(false);
 const propertyType = ref('house'); 
@@ -22,9 +23,11 @@ const selectAlquiler = () => {
 
 const searchProperties = async () => {
     const action = isVentaSelected.value ? 'venta' : 'alquiler';
-    await searchStore.searchProperties(propertyType.value, action);
-    router.push({ path: '/public', query: { action, type: propertyType.value } });
+    await searchStore.searchProperties(propertyType.value, action, address.value); 
+    router.push({ path: '/public', query: { action, type: propertyType.value, address: address.value } }); 
 };
+
+
 </script>
 
 <template>
@@ -40,12 +43,12 @@ const searchProperties = async () => {
                 <select v-model="propertyType" class="form-select select-custom">
                     <option value="house">Casa</option>
                     <option value="flat">Apartamento</option>
-                    <option value="garage">Garage</option>
+                    <option value="garage">Garaje</option>
                     <option value="storageroom">Trastero</option>
                 </select>
             </div>
 
-            <input v-model="query" class="form-control mx-1" placeholder="Buscar propiedades..." />
+            <input v-model="address" class="form-control mx-1" placeholder="Dirección..." /> 
 
             <button class="btn btn-secondary search-btn" @click="searchProperties">Buscar</button>
         </div>
