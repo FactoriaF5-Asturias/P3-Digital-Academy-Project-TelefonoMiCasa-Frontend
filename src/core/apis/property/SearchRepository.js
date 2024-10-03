@@ -21,10 +21,10 @@ export default class SearchRepository {
                 property.address,
                 property.area,
                 property.action,
-                property.bedrooms,
-                property.elevator,
-                property.floor,
-                property.bathrooms,
+                property.room,
+                property.hasElevator,
+                property.floors,
+                property.bathroom,
                 property.house 
             ));
         } catch (error) {

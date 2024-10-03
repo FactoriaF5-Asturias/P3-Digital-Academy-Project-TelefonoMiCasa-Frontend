@@ -37,19 +37,19 @@ onMounted(() => {
         <div class="features">
           <div class="feature">
             <img :src="bedroomIcon" alt="Bedrooms Icon" class="icon" />
-            <span>{{ property.bedrooms || 'N/A' }} habs.</span>
+            <span>{{ property.room || 'N/A' }} habs.</span>
           </div>
           <div class="feature">
             <img :src="elevatorIcon" alt="Elevator Icon" class="icon" />
-            <span>{{ property.elevator ? 'Sí' : 'No' }}</span>
+            <span>{{ property.hasElevator ? 'Sí' : 'No' }}</span>
           </div>
           <div class="feature">
             <img :src="floorIcon" alt="Floor Icon" class="icon" />
-            <span>{{ property.floor || 'N/A' }}</span>
+            <span>planta {{ property.floors || 'N/A' }} </span>
           </div>
           <div class="feature">
             <img :src="bathroomIcon" alt="Bathroom Icon" class="icon" />
-            <span>{{ property.bathrooms || 'N/A' }} baño</span>
+            <span>{{ property.bathroom || 'N/A' }} baño</span>
           </div>
           <div class="feature">
             <img :src="areaIcon" alt="Area Icon" class="icon" />
