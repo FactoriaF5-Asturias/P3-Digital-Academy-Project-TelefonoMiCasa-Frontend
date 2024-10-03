@@ -40,6 +40,8 @@ const searchProperties = async () => {
                 <select v-model="propertyType" class="form-select select-custom">
                     <option value="house">Casa</option>
                     <option value="flat">Apartamento</option>
+                    <option value="garage">Garage</option>
+                    <option value="storageroom">Trastero</option>
                 </select>
             </div>
 
