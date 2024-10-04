@@ -14,7 +14,7 @@ const isVisible = ref(false);
 const openPopup = () => {
   isVisible.value = true;
   setTimeout(() => {
-    document.body.classList.add('modal-open'); 
+    document.body.classList.add('modal-open');
   }, 0);
 };
 
@@ -25,31 +25,20 @@ const closePopup = () => {
 
 const submitForm = () => {
   console.log('Datos enviados:', formData);
-  closePopup(); // Cierra el popup después de enviar
+  closePopup(); 
 };
 </script>
 
-<style scoped>
-.modal.fade {
-  display: none;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.modal-open {
-  overflow: hidden;
-}
-</style>
-
 <template>
   <div>
-    <button class="btn btn-primary" @click="openPopup">Abrir Formulario</button>
+    <button class="btn btn-secondary m-left:" @click="openPopup">Abrir Formulario</button>
 
     <div class="modal fade" :class="{ show: isVisible }" style="display: block;" tabindex="-1" role="dialog" v-if="isVisible">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Datos Personales</h5>
-            <button type="button" class="close" aria-label="Close" @click="closePopup">
+            <button type="button" class="close" aria-label="Close" @click="closePopup" style="border: none; background: none;">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -81,8 +70,8 @@ const submitForm = () => {
               </div>
 
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click="closePopup">Cerrar</button>
-                <button type="submit" class="btn-1 btn-secondary ">Enviar</button>
+                <button type="button" class="btn btn-secondary bg" @click="closePopup">Cerrar</button>
+                <button type="submit" class="btn-1 btn-secondary">Enviar</button>
               </div>
             </form>
           </div>
@@ -92,8 +81,23 @@ const submitForm = () => {
   </div>
 </template>
 
+
 <style scoped>
+.modal.fade {
+  display: none;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-open {
+  overflow: hidden;
+}
 .btn-1{
   background-color: #650000 !important;
+  border-radius: 10px;
+  color: white;
+}
+
+.close {
+  margin-left: auto; 
 }
 </style>
