@@ -1,5 +1,3 @@
-
-
 <script setup>
 
 import { onMounted, ref } from 'vue';
@@ -39,19 +37,19 @@ onMounted(() => {
         <div class="features">
           <div class="feature">
             <img :src="bedroomIcon" alt="Bedrooms Icon" class="icon" />
-            <span>{{ property.bedrooms || 'N/A' }} habs.</span>
+            <span>{{ property.room || 'N/A' }} habs.</span>
           </div>
           <div class="feature">
             <img :src="elevatorIcon" alt="Elevator Icon" class="icon" />
-            <span>{{ property.elevator ? 'Sí' : 'No' }}</span>
+            <span>{{ property.hasElevator ? 'Sí' : 'No' }}</span>
           </div>
           <div class="feature">
             <img :src="floorIcon" alt="Floor Icon" class="icon" />
-            <span>{{ property.floor || 'N/A' }}</span>
+            <span>planta {{ property.floors || 'N/A' }} </span>
           </div>
           <div class="feature">
             <img :src="bathroomIcon" alt="Bathroom Icon" class="icon" />
-            <span>{{ property.bathrooms || 'N/A' }} baño</span>
+            <span>{{ property.bathroom || 'N/A' }} baño</span>
           </div>
           <div class="feature">
             <img :src="areaIcon" alt="Area Icon" class="icon" />
@@ -70,71 +68,86 @@ onMounted(() => {
     </div>
   </div>
 </template>
-<style scoped>
 
-</style>
 <style scoped>
 .properties-list {
-margin-top: 30px;
-margin-left: 20px;
-  display: grid;
-  grid-template-columns: repeat(2, 3fr);
-  gap: 20px;
+  margin-top: 30px;
+  display: flex;
   justify-content: center;
-  grid-template-columns: 600px 400px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
+
 .card {
   display: flex;
-  background-color: #FFFBBB;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fffbbb;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 580px;
   height: 300px;
   flex-direction: row;
+  overflow: hidden;
+  max-width: 95%;
+  flex-wrap: nowrap; 
 }
+
 .image-container {
-  flex: 1;
-  max-width: 50%;
+  width: 45%; 
+  background-color: #f5f5f5;
+  flex-basis: 45%;
 }
+
 .property-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  padding: 20px;
 }
+
 .content {
+  flex-basis: 55%; 
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
+
 .price {
   font-size: 24px;
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
 }
+
 .description {
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
+
 .address {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
 .features {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
   margin-bottom: 20px;
 }
+
 .feature {
   display: flex;
   align-items: center;
 }
+
 .icon {
   width: 30px;
   height: 30px;
@@ -171,57 +184,45 @@ margin-left: 20px;
   height: 24px;
   stroke: #999;
 }
-@media (max-width: 768px) {
-  .properties-list {
-    grid-template-columns: 1fr;
-  }
+
+@media (max-width: 1200px) and (max-width: 819px) {
   .card {
-    width: 100%;
-    flex-direction: column;
-    height: auto;
+    width: 400px;
+    height: 250px;
   }
-  .property-image {
-    padding: 20px;
-   width: 350px;
+
+  .image-container {
+    flex-basis: 45%;
   }
+
   .content {
-    padding: 10px;
+    flex-basis: 65%;
+    padding: 5px;
   }
+
   .price {
     font-size: 20px;
   }
+
   .description {
-    font-size: 12px;
-  }
-  .features {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-  }
-  .icon {
-    width: 30px;
-    height: 30px;
-  }
-  .schedule-visit {
-    padding: 8px 16px;
     font-size: 14px;
   }
-}
-@media (max-width: 480px) {
+
   .features {
-    grid-template-columns: 1fr;
+    gap: 10px;
   }
-  .icon {
-    width: 25px;
-    height: 25px;
-  }
-  .schedule-visit {
-    width: 100%;
-    text-align: center;
-  }
-  .favorite {
-    display: block;
-    margin-top: 10px;
-  }
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  display: none;
 }
 .no-results {
   text-align: center;
@@ -229,4 +230,68 @@ margin-left: 20px;
   color: #666;
   margin-top: 20px;
 }
+.schedule-visit {
+  background-color: #D6B666;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.favorite {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.heart-icon {
+  width: 24px;
+  height: 24px;
+  stroke: #999;
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .image-container {
+    width: 100%;
+    height: 200px;
+    flex-basis: auto;
+  }
+
+  .property-image {
+    height: 100%;
+  }
+
+  .content {
+    flex-basis: auto;
+    padding: 15px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .features {
+    flex-direction: row;
+    gap: 10px;
+  }
+}
+
 </style>
