@@ -1,18 +1,64 @@
+<template>
+  <main v-if="isVisible">
+    <div class="modal">
+      <div class="modal-content">
+        <h2>Cambio de contraseña</h2>
+        <div class="form">
+          <form @submit.prevent="cambiarContrasena">
+            <input type="text" id="username" name="username" autocomplete="username" style="display: none;" />
+
+            <div class="form-group">
+              <label for="nuevaContrasena">Nueva Contraseña:</label>
+              <input 
+                type="password" 
+                id="nuevaContrasena" 
+                v-model="nuevaContrasena" 
+                required
+                autocomplete="new-password"
+              />
+            </div>
+            
+            <div v-if="!isPasswordValid && nuevaContrasena" class="error-message">
+              La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos
+            </div>
+            <div class="button-container">
+              <button type="submit" :disabled="!canSubmit">
+                {{ isLoading ? 'Cambiando...' : 'Cambiar contraseña' }}
+              </button>
+            </div>
+            <div v-if="errorMessage" class="error-message">
+              {{ errorMessage }}
+            </div>
+            <div v-if="successMessage" class="success-message">
+              {{ successMessage }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
 <script setup>
-import { ref, computed, defineEmits } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, defineEmits, watch } from 'vue';
 import axios from 'axios';
 
+const props = defineProps({
+  isVisible: {
+    type: Boolean,
+    default: false,
+  },
+});
 const nuevaContrasena = ref('');
 const errorMessage = ref('');
 const successMessage = ref('');
 const isLoading = ref(false);
-const emit = defineEmits(); // Definimos los eventos a emitir
+const emit = defineEmits(); z
 
 const isPasswordValid = computed(() => {
   const password = nuevaContrasena.value;
   return (
-    password.length >= 5 &&
+    password.length >= 8 && // Asegúrate de que sea al menos 8 caracteres
     /[A-Z]/.test(password) &&
     /[a-z]/.test(password) &&
     /[0-9]/.test(password) &&
@@ -51,7 +97,7 @@ const cambiarContrasena = async () => {
     if (response.status === 200) {
       successMessage.value = 'Contraseña cambiada con éxito.';
       nuevaContrasena.value = '';
-      emit('password-changed'); // Emitir evento cuando la contraseña cambie
+      emit('close-modal'); // Emitir evento para cerrar el modal
     } else {
       throw new Error('La respuesta del servidor no fue exitosa');
     }
@@ -62,46 +108,14 @@ const cambiarContrasena = async () => {
     isLoading.value = false;
   }
 };
-</script>
 
-<template>
-  <main>
-    <div class="modal">
-      <div class="modal-content">
-        <h2>Cambio de contraseña</h2>
-        <div class="form">
-          <form @submit.prevent="cambiarContrasena">
-            <div class="form-group">
-              <label for="nuevaContrasena">Nueva Contraseña:</label>
-              <input 
-                type="password" 
-                id="nuevaContrasena" 
-                v-model="nuevaContrasena" 
-                required
-                autocomplete="new-password"
-              />
-            </div>
-            
-            <div v-if="!isPasswordValid && nuevaContrasena" class="error-message">
-              La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos
-            </div>
-            <div class="button-container">
-              <button type="submit" :disabled="!canSubmit">
-                {{ isLoading ? 'Cambiando...' : 'Cambiar contraseña' }}
-              </button>
-            </div>
-            <div v-if="errorMessage" class="error-message">
-              {{ errorMessage }}
-            </div>
-            <div v-if="successMessage" class="success-message">
-              {{ successMessage }}
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </main>
-</template>
+// Opción adicional: Resetea la contraseña después de un cambio exitoso
+watch(successMessage, (newValue) => {
+  if (newValue) {
+    nuevaContrasena.value = ''; // Resetea la contraseña
+  }
+});
+</script>
 
 <style scoped>
 /* Estilo permanece igual */
