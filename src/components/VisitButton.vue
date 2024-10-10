@@ -1,4 +1,4 @@
-<!-- VisitButton.vue -->
+
 <template>
   <div>
     <button @click="abrirPopup" class="schedule-visit">Agendar Visita</button>
@@ -8,16 +8,15 @@
 
 <script setup>
 import { ref } from 'vue';
-import popupvist from '@/components/PopupVist.vue'; // Verifica que esta ruta sea correcta
-
+import popupvist from '@/components/PopupVist.vue'; 
 const mostrarModal = ref(false);
 
 function abrirPopup() {
-  mostrarModal.value = true; // Abre el popup
+  mostrarModal.value = true; 
 }
 
 function cerrarPopup() {
-  mostrarModal.value = false; // Cierra el popup
+  mostrarModal.value = false; 
 }
 
 function procesarVisita(datos) {
@@ -35,9 +34,10 @@ function procesarVisita(datos) {
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
+  
 }
 
 .schedule-visit:hover {
-  background-color: #b58c42;
+  background-color: #822c2c;
 }
 </style>
