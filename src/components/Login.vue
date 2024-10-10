@@ -52,7 +52,7 @@ const clearForm = () => {
   formErrorMessage.value = '';
   authErrorMessage.value = '';
   registerErrorMessage.value = '';
-  console.clear(); // Limpiar la consola
+  console.clear();
 };
 
 const isActiveTab = computed(() => {
@@ -67,19 +67,23 @@ const submitLogin = async () => {
 
   try {
     const response = await authStore.login(loginName.value, loginPassword.value);
-    
-    if (response && response.roles) {
-      const userRole = response.roles;  
 
-      if (userRole === 'ROLE_ADMIN') {
-    router.push('/adminview');  
-} else if (userRole === 'ROLE_USER') {
-    router.push('/userview');  
-} else if (userRole === 'ROLE_SALESMAN') {
-    router.push('/salesmendashboardview');  
-} else {
-    authErrorMessage.value = 'Rol no reconocido.';
-}
+    if (response && response.roles) {
+      const userRole = response.roles[0]; // Suponiendo que roles es un array
+
+      switch (userRole) {
+        case 'ROLE_ADMIN':
+          router.push('/adminview');
+          break;
+        case 'ROLE_USER':
+          router.push('/userview');
+          break;
+        case 'ROLE_SALESMAN':
+          router.push('/salesmendashboardview');
+          break;
+        default:
+          authErrorMessage.value = 'Rol no reconocido.';
+      }
 
       closePopup();
     } else {
@@ -90,7 +94,7 @@ const submitLogin = async () => {
   }
 };
 
-const submitRegister = () => {
+const submitRegister = async () => {
   if (!registerUsername.value || !registerPassword.value || !registerConfirmPassword.value) {
     registerErrorMessage.value = 'Por favor, rellena todos los campos para continuar.';
     return;
@@ -101,45 +105,68 @@ const submitRegister = () => {
     return;
   }
 
-  // Aquí iría la lógica de registro, por ejemplo:
-  console.log('Registro con:', registerUsername.value, registerPassword.value);
-  closePopup();
+  try {
+    const response = await fetch('http://localhost:8080/api/v1/client', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: registerUsername.value,
+        encryptedPassword: registerPassword.value, // Asegúrate de cifrar esto en el backend
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Cliente creado exitosamente:', data);
+      closePopup();
+      alert('Registro exitoso!');
+    } else {
+      const errorData = await response.json();
+      registerErrorMessage.value = errorData.error || 'Error al registrar el cliente.';
+    }
+  } catch (error) {
+    registerErrorMessage.value = 'Error en el servidor. Inténtalo de nuevo más tarde.';
+  }
 };
 
 // Exponer el método openPopup
 defineExpose({ openPopup });
 </script>
+
 <template>
   <div v-if="isOpen" class="popup-overlay" @click.self="closePopup">
     <div class="login-container">
       <div class="login-box">
         <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
           <li class="nav-item" role="presentation">
-            <a class="nav-link" :class="{ active: isActiveTab('login') }" @click="setTab('login')"
-               id="tab-login" href="#pills-login" role="tab"
-               aria-controls="pills-login" :aria-selected="isActiveTab('login')">Acceder</a>
+            <a class="nav-link" :class="{ active: isActiveTab('login') }" @click="setTab('login')" id="tab-login"
+              href="#pills-login" role="tab" aria-controls="pills-login"
+              :aria-selected="isActiveTab('login')">Acceder</a>
           </li>
           <li class="nav-item" role="presentation">
             <a class="nav-link" :class="{ active: isActiveTab('register') }" @click="setTab('register')"
-               id="tab-register" href="#pills-register" role="tab"
-               aria-controls="pills-register" :aria-selected="isActiveTab('register')">Registro</a>
+              id="tab-register" href="#pills-register" role="tab" aria-controls="pills-register"
+              :aria-selected="isActiveTab('register')">Registro</a>
           </li>
         </ul>
 
         <div class="tab-content">
-          <div class="tab-pane fade" :class="{ 'show active': isActiveTab('login') }" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+          <div class="tab-pane fade" :class="{ 'show active': isActiveTab('login') }" id="pills-login" role="tabpanel"
+            aria-labelledby="tab-login">
             <form @submit.prevent="submitLogin">
               <div v-if="formErrorMessage" class="error-message">{{ formErrorMessage }}</div>
               <div v-if="authErrorMessage" class="error-message">{{ authErrorMessage }}</div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="loginName">Usuario</label>
-                <input type="user" v-model="loginName" id="loginName" class="form-control"  placeholder="Introduzca su Email..."/>
+                <input type="text" v-model="loginName" id="loginName" class="form-control"
+                  placeholder="Introduzca su Email..." />
               </div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="loginPassword">Contraseña</label>
-                <input type="password" v-model="loginPassword" id="loginPassword" class="form-control"  placeholder="Introduzca su contraseña..."/>
+                <input type="password" v-model="loginPassword" id="loginPassword" class="form-control"
+                  placeholder="Introduzca su contraseña..." />
               </div>
 
               <div class="button-container">
@@ -148,23 +175,27 @@ defineExpose({ openPopup });
             </form>
           </div>
 
-          <div class="tab-pane fade" :class="{ 'show active': isActiveTab('register') }" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+          <div class="tab-pane fade" :class="{ 'show active': isActiveTab('register') }" id="pills-register"
+            role="tabpanel" aria-labelledby="tab-register">
             <form @submit.prevent="submitRegister">
               <div v-if="registerErrorMessage" class="error-message">{{ registerErrorMessage }}</div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="registerUsername">Usuario</label>
-                <input type="text" v-model="registerUsername" id="registerUsername" class="form-control" placeholder="Introduzca su Email..." />
+                <input type="text" v-model="registerUsername" id="registerUsername" class="form-control"
+                  placeholder="Introduzca su Email..." />
               </div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="registerPassword">Contraseña</label>
-                <input type="password" v-model="registerPassword" id="registerPassword" class="form-control" placeholder="Contraseña..." />
+                <input type="password" v-model="registerPassword" id="registerPassword" class="form-control"
+                  placeholder="Contraseña..." />
               </div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña</label>
-                <input type="password" v-model="registerConfirmPassword" id="registerConfirmPassword" class="form-control" placeholder="Confirme su contraseña..."/>
+                <input type="password" v-model="registerConfirmPassword" id="registerConfirmPassword"
+                  class="form-control" placeholder="Confirme su contraseña..." />
               </div>
 
               <div class="button-container">
