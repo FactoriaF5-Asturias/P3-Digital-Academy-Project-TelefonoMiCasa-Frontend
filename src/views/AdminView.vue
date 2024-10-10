@@ -11,7 +11,14 @@
         <li v-for="salesman in salesmenStore.salesmen" :key="salesman.id" class="salesman-list">
           <div class="salesman-container">
             <input type="text" :value="salesman.username" readonly class="salesman-name" />
-            <AssignZone :salesman="salesman" class="assign-zone"/>
+            <AssignZone 
+    :salesman="salesman" 
+    :assigned-zones="getAssignedZones(salesman.id)" 
+    :all-salesmen-zones="salesmenStore.salesmen.flatMap(s => s.assignedZones || [])" 
+    @zone-assigned="handleZoneAssigned"
+    class="assign-zone"
+/>
+
           </div>
         </li>
       </ul>
@@ -30,6 +37,24 @@ const salesmenStore = useSalesmenStore();
 onMounted(() => {
   salesmenStore.loadSalesmen();
 });
+
+// Manejador del evento zone-assigned
+const handleZoneAssigned = (zoneId) => {
+  console.log(`Zona asignada: ${zoneId}`);
+  // Aquí puedes agregar cualquier lógica adicional que necesites
+};
+
+const getAssignedZones = (salesmanId) => {
+    // Aquí debes implementar la lógica para obtener las zonas asignadas al vendedor
+    const assignedZones = []; // Aquí deberías obtener las zonas asignadas de tu store o API
+    salesmenStore.salesmen.forEach((salesman) => {
+        if (salesman.id !== salesmanId && salesman.assignedZones) {
+            assignedZones.push(...salesman.assignedZones);
+        }
+    });
+    return assignedZones; // Devuelve un array con las zonas asignadas
+};
+
 </script>
 
 <style scoped>
@@ -46,7 +71,7 @@ onMounted(() => {
 }
 
 .salesman-name {
-  color:black;
+  color: black;
   flex: 1;
   padding: 10px;
   border: 1px solid #650000;
