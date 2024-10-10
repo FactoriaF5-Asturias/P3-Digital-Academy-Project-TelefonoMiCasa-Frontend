@@ -1,14 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 
-
 import Salesmenformproperties from './Salesmenformproperties.vue';
 import AddIPropertiesButton from './AddIPropertiesButton.vue';
-
-
+import PropertyList from './PropertyList.vue'; 
 
 const currentView = ref('');
-const isPopupVisible = ref(false); 
+const isPopupVisible = ref(false);
+const properties = ref([]); 
 
 const changeView = (view) => {
   currentView.value = view;
@@ -20,6 +19,11 @@ const showPopup = () => {
 
 const closePopup = () => {
   isPopupVisible.value = false;
+};
+
+
+const addPropertyToList = (newProperty) => {
+  properties.value.push(newProperty);
 };
 </script>
 
@@ -63,6 +67,9 @@ const closePopup = () => {
           
           <AddIPropertiesButton @add="showPopup" />
         </div>
+
+       
+        <PropertyList :properties="properties" />
       </div>
 
       <div v-if="currentView === 'mas-visitados'">
@@ -74,9 +81,42 @@ const closePopup = () => {
       </div>
     </div>
 
-    <Salesmenformproperties v-if="isPopupVisible" @close="closePopup" />
+  
+    <Salesmenformproperties v-if="isPopupVisible" @close="closePopup" @property-added="addPropertyToList" />
   </div>
 </template>
+
+<style scoped>
+.bg-granate {
+  background-color: #800020;
+}
+
+.salesmen-dashboard {
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+.main-title {
+  font-size: 1.5rem;
+  color: #800606;
+}
+
+.sub-title {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.title-button-container {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+}
+
+.container {
+  margin-top: 20px;
+}
+</style>
+
 
 <style scoped>
 .bg-granate {
