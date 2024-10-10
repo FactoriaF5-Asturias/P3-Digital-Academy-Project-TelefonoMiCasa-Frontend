@@ -14,7 +14,7 @@ onMounted(() => {
 
 <template>
   <main>
-    <h1>Admin view</h1>
+    <h1>Lista de comerciales</h1>
     <Button/>
 
     <section>

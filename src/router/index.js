@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import PublicView from '@/views/PublicView.vue'
 import Login from '@/components/Login.vue'
 import { useAuthStore } from '@/stores/auth'
+import SalesmenDashboardView from '../views/SalesmenDashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +18,7 @@ const router = createRouter({
       path: '/login',
       name: 'Login',
       component: Login,
+      meta: { requiresAuth: true }
     },
    
     {
@@ -25,16 +27,23 @@ const router = createRouter({
       component: () => import('../views/AdminView.vue'),
       meta: { requiresAuth: true }
     },
-
-  
-
+    
      {
       path: '/public',
       name: 'Public',
-      component: PublicView
+      component: PublicView,
+      meta: { requiresAuth: true }
+    },
+
+    {
+      path: '/salesmendashboardview',
+      name: 'SalesmenDashboardView',
+      component: SalesmenDashboardView, 
+      meta: { requiresAuth: true }
     }
   ]
 })
+
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();  

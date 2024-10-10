@@ -35,13 +35,24 @@ const openPopup = () => {
 
 const closePopup = () => {
   isOpen.value = false;
+  clearForm();
 };
 
 const setTab = (tab) => {
   currentTab.value = tab;
+  clearForm();
+};
+
+const clearForm = () => {
+  loginName.value = '';
+  loginPassword.value = '';
+  registerUsername.value = '';
+  registerPassword.value = '';
+  registerConfirmPassword.value = '';
   formErrorMessage.value = '';
   authErrorMessage.value = '';
   registerErrorMessage.value = '';
+  console.clear(); // Limpiar la consola
 };
 
 const isActiveTab = computed(() => {
@@ -61,12 +72,15 @@ const submitLogin = async () => {
       const userRole = response.roles;  
 
       if (userRole === 'ROLE_ADMIN') {
-        router.push('/adminview');  
-      } else if (userRole === 'ROLE_USER') {
-        router.push('/userview');  
-      } else {
-        authErrorMessage.value = 'Rol no reconocido.';
-      }
+    router.push('/adminview');  
+} else if (userRole === 'ROLE_USER') {
+    router.push('/userview');  
+} else if (userRole === 'ROLE_SALESMAN') {
+    router.push('/salesmendashboardview');  
+} else {
+    authErrorMessage.value = 'Rol no reconocido.';
+}
+
       closePopup();
     } else {
       authErrorMessage.value = 'Error en la autenticación. Por favor, verifica tus credenciales.';
@@ -120,12 +134,12 @@ defineExpose({ openPopup });
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="loginName">Usuario</label>
-                <input type="user" v-model="loginName" id="loginName" class="form-control" />
+                <input type="user" v-model="loginName" id="loginName" class="form-control"  placeholder="Introduzca su Email..."/>
               </div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="loginPassword">Contraseña</label>
-                <input type="password" v-model="loginPassword" id="loginPassword" class="form-control" />
+                <input type="password" v-model="loginPassword" id="loginPassword" class="form-control"  placeholder="Introduzca su contraseña..."/>
               </div>
 
               <div class="button-container">
@@ -140,17 +154,17 @@ defineExpose({ openPopup });
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="registerUsername">Usuario</label>
-                <input type="text" v-model="registerUsername" id="registerUsername" class="form-control" />
+                <input type="text" v-model="registerUsername" id="registerUsername" class="form-control" placeholder="Introduzca su Email..." />
               </div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="registerPassword">Contraseña</label>
-                <input type="password" v-model="registerPassword" id="registerPassword" class="form-control" />
+                <input type="password" v-model="registerPassword" id="registerPassword" class="form-control" placeholder="Contraseña..." />
               </div>
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña</label>
-                <input type="password" v-model="registerConfirmPassword" id="registerConfirmPassword" class="form-control" />
+                <input type="password" v-model="registerConfirmPassword" id="registerConfirmPassword" class="form-control" placeholder="Confirme su contraseña..."/>
               </div>
 
               <div class="button-container">
@@ -268,5 +282,21 @@ input{
 
 .login-box label {
   text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.50);
+}
+
+::placeholder{
+  font-size: 1.5rem;
+}
+
+@media (max-width: 780px) {
+ ::placeholder{
+  font-size: 1rem;
+ } 
+}
+
+@media (max-width: 480px) {
+ ::placeholder{
+  font-size: 0.8rem;
+ }
 }
 </style>
