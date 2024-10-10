@@ -4,6 +4,7 @@ import PublicView from '@/views/PublicView.vue'
 import Login from '@/components/Login.vue'
 import { useAuthStore } from '@/stores/auth'
 import SalesmenDashboardView from '../views/SalesmenDashboardView.vue'
+import UserView from '@/views/UserView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,7 +26,7 @@ const router = createRouter({
       path: '/adminview',
       name: 'adminview',
       component: () => import('../views/AdminView.vue'),
-      meta: { requiresAuth: true }
+      // meta: { requiresAuth: true }
     },
     
      {
@@ -39,7 +40,12 @@ const router = createRouter({
       path: '/salesmendashboardview',
       name: 'SalesmenDashboardView',
       component: SalesmenDashboardView, 
-      meta: { requiresAuth: true }
+    },
+    {
+      path: '/userview',
+      name: 'userview',
+      component: UserView,
+      // meta: { requiresAuth: true }
     }
   ]
 })
