@@ -17,13 +17,7 @@ const formErrorMessage = ref('');
 const authErrorMessage = ref('');
 const registerErrorMessage = ref('');
 
-watch(loginName, () => {
-  if (formErrorMessage.value) {
-    formErrorMessage.value = '';
-  }
-});
-
-watch(loginPassword, () => {
+watch([loginName, loginPassword], () => {
   if (formErrorMessage.value) {
     formErrorMessage.value = '';
   }
@@ -59,6 +53,26 @@ const isActiveTab = computed(() => {
   return (tab) => currentTab.value === tab;
 });
 
+const getUserInfo = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/api/v1/login', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Basic ${btoa(`${loginName.value}:${loginPassword.value}`)}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error('No se pudo obtener la información del usuario.');
+    }
+  } catch (error) {
+    console.error('Error al obtener la información del usuario:', error);
+  }
+};
+
 const submitLogin = async () => {
   if (!loginName.value || !loginPassword.value) {
     formErrorMessage.value = 'Por favor, rellena todos los campos para continuar.';
@@ -66,37 +80,47 @@ const submitLogin = async () => {
   }
 
   try {
-    const response = await authStore.login(loginName.value, loginPassword.value);
+    const loginResponse = await authStore.login(loginName.value, loginPassword.value);
 
-    if (response && response.roles) {
-      const userRole = response.roles[0]; // Suponiendo que roles es un array
+    if (loginResponse) {
+      const userInfo = await getUserInfo();
 
-      switch (userRole) {
-        case 'ROLE_ADMIN':
+      if (userInfo && userInfo.roles) {
+        const userRoles = userInfo.roles;
+
+        if (userRoles.includes('ROLE_ADMIN')) {
           router.push('/adminview');
-          break;
-        case 'ROLE_USER':
+        } else if (userRoles.includes('ROLE_USER')) {
           router.push('/userview');
-          break;
-        case 'ROLE_SALESMAN':
+        } else if (userRoles.includes('ROLE_SALESMAN')) {
           router.push('/salesmendashboardview');
-          break;
-        default:
+        } else {
           authErrorMessage.value = 'Rol no reconocido.';
-      }
+        }
 
-      closePopup();
-    } else {
-      authErrorMessage.value = 'Error en la autenticación. Por favor, verifica tus credenciales.';
+        closePopup();
+      } else {
+        authErrorMessage.value = 'Error en la autenticación. Por favor, verifica tus credenciales.';
+      }
     }
   } catch (error) {
     authErrorMessage.value = 'Error en la autenticación. Inténtalo de nuevo más tarde.';
   }
 };
 
+const validarCorreo = (correo) => {
+  const patron = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return patron.test(correo);
+};
+
 const submitRegister = async () => {
   if (!registerUsername.value || !registerPassword.value || !registerConfirmPassword.value) {
     registerErrorMessage.value = 'Por favor, rellena todos los campos para continuar.';
+    return;
+  }
+
+  if (!validarCorreo(registerUsername.value)) {
+    registerErrorMessage.value = 'Correo electrónico inválido. Por favor, verifica el formato.';
     return;
   }
 
@@ -111,7 +135,7 @@ const submitRegister = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: registerUsername.value,
-        encryptedPassword: registerPassword.value, // Asegúrate de cifrar esto en el backend
+        encryptedPassword: registerPassword.value,
       }),
     });
 
@@ -129,7 +153,6 @@ const submitRegister = async () => {
   }
 };
 
-// Exponer el método openPopup
 defineExpose({ openPopup });
 </script>
 
@@ -208,9 +231,6 @@ defineExpose({ openPopup });
     </div>
   </div>
 </template>
-
-
-
 
 
 <style scoped>
