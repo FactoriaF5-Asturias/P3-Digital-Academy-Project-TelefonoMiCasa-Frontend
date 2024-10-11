@@ -1,24 +1,21 @@
-
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import LoginPopup from '../Login.vue'; 
+import { useAuthStore } from '@/stores/auth'; // Asegúrate de que la ruta sea correcta
+import LoginPopup from '../Login.vue';
 
 const loginPopupRef = ref(null);
 const router = useRouter();
-const isAuthenticated = ref(false); 
-
+const authStore = useAuthStore();
+const isAuthenticated = ref(false);
 
 watch(router.currentRoute, (newRoute) => {
   const isUserView = newRoute.path.includes('/userview');
   const isAdminView = newRoute.path.includes('/adminview');
   const isSalesmenView = newRoute.path.includes('/salesmendashboardview');
-
   
- 
   isAuthenticated.value = isUserView || isAdminView || isSalesmenView;
 });
-
 
 const openLoginPopup = () => {
   if (loginPopupRef.value) {
@@ -26,17 +23,22 @@ const openLoginPopup = () => {
   }
 };
 
-
 const logout = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/v1/logout', {
       method: 'POST',
-      credentials: 'include' 
+      credentials: 'include'
     });
 
     if (response.ok) {
-      isAuthenticated.value = false; 
-      router.push('/'); 
+      // Limpiar el estado de Pinia
+      authStore.logout();
+      
+      // Actualizar el estado local
+      isAuthenticated.value = false;
+      
+      // Redirigir al inicio
+      router.push('/');
     } else {
       console.error('Error al cerrar sesión:', response.status);
     }
@@ -44,7 +46,6 @@ const logout = async () => {
     console.error('Error al cerrar sesión:', error);
   }
 };
-
 </script>
 
 <template>
@@ -56,13 +57,11 @@ const logout = async () => {
       </router-link>
     </div>
 
-    
     <a v-if="!isAuthenticated" @click.prevent="openLoginPopup" class="btn btn-danger d-flex align-items-center btn-responsive" href="#">
       <i class="fas fa-user me-2"></i>
       <span>Acceder</span>
     </a>
 
-    
     <a v-else @click.prevent="logout" class="btn btn-danger d-flex align-items-center btn-responsive" href="#">
       <i class="fas fa-sign-out-alt me-2"></i>
       <span>Cerrar sesión</span>
@@ -71,7 +70,6 @@ const logout = async () => {
     <LoginPopup ref="loginPopupRef" />
   </header>
 </template>
-
 
 
 <style scoped>
