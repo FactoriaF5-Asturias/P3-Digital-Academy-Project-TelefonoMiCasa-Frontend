@@ -8,7 +8,8 @@ export const useAuthStore = defineStore('auth', () => {
         username: '',
         password: '',
         isAuthenticated: false,
-        role: '' 
+        role: '',
+        passwordChanged: false
     });
 
     async function login(username, password) {
@@ -17,10 +18,11 @@ export const useAuthStore = defineStore('auth', () => {
         
         try {
             const response = await service.login();
-            
-            user.value.username = username;
+                        
+            user.value.username = response.username;
+            user.value.role = response.roles;
             user.value.isAuthenticated = true;
-            user.value.role = response.role;
+            user.value.passwordChanged = response.passwordChanged;
             
             return response; 
         } catch (error) {

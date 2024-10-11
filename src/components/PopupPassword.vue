@@ -1,44 +1,3 @@
-<template>
-  <main v-if="isVisible">
-    <div class="modal">
-      <div class="modal-content">
-        <h2>Cambio de contraseña</h2>
-        <div class="form">
-          <form @submit.prevent="cambiarContrasena">
-            <input type="text" id="username" name="username" autocomplete="username" style="display: none;" />
-
-            <div class="form-group">
-              <label for="nuevaContrasena">Nueva Contraseña:</label>
-              <input 
-                type="password" 
-                id="nuevaContrasena" 
-                v-model="nuevaContrasena" 
-                required
-                autocomplete="new-password"
-              />
-            </div>
-            
-            <div v-if="!isPasswordValid && nuevaContrasena" class="error-message">
-              La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos
-            </div>
-            <div class="button-container">
-              <button type="submit" :disabled="!canSubmit">
-                {{ isLoading ? 'Cambiando...' : 'Cambiar contraseña' }}
-              </button>
-            </div>
-            <div v-if="errorMessage" class="error-message">
-              {{ errorMessage }}
-            </div>
-            <div v-if="successMessage" class="success-message">
-              {{ successMessage }}
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </main>
-</template>
-
 <script setup>
 import { ref, computed, defineEmits, watch } from 'vue';
 import axios from 'axios';
@@ -53,7 +12,7 @@ const nuevaContrasena = ref('');
 const errorMessage = ref('');
 const successMessage = ref('');
 const isLoading = ref(false);
-const emit = defineEmits(); z
+const emit = defineEmits();
 
 const isPasswordValid = computed(() => {
   const password = nuevaContrasena.value;
@@ -84,7 +43,7 @@ const cambiarContrasena = async () => {
 
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
       'encryptedPassword': encodedPassword,
     };
 
@@ -116,6 +75,43 @@ watch(successMessage, (newValue) => {
   }
 });
 </script>
+
+<template>
+  <main v-if="isVisible">
+    <div class="modal">
+      <div class="modal-content">
+        <h2>Cambio de contraseña</h2>
+        <div class="form">
+          <form @submit.prevent="cambiarContrasena">
+            <input type="text" id="username" name="username" autocomplete="username" style="display: none;" />
+
+            <div class="form-group">
+              <label for="nuevaContrasena">Nueva Contraseña:</label>
+              <input type="password" id="nuevaContrasena" v-model="nuevaContrasena" required
+                autocomplete="new-password" />
+            </div>
+
+            <div v-if="!isPasswordValid && nuevaContrasena" class="error-message">
+              La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos
+            </div>
+            <div class="button-container">
+              <button type="submit" :disabled="!canSubmit">
+                {{ isLoading ? 'Cambiando...' : 'Cambiar contraseña' }}
+              </button>
+            </div>
+            <div v-if="errorMessage" class="error-message">
+              {{ errorMessage }}
+            </div>
+            <div v-if="successMessage" class="success-message">
+              {{ successMessage }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
 
 <style scoped>
 /* Estilo permanece igual */
