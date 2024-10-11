@@ -1,20 +1,23 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, defineEmits, watch } from 'vue';
 import axios from 'axios';
 
+const props = defineProps({
+  isVisible: {
+    type: Boolean,
+    default: false,
+  },
+});
 const nuevaContrasena = ref('');
 const errorMessage = ref('');
 const successMessage = ref('');
 const isLoading = ref(false);
-const isModalVisible = ref(true);
-const isPasswordChanged = ref(false); // Nueva variable para controlar si la contraseña fue cambiada
-const router = useRouter();
+const emit = defineEmits();
 
 const isPasswordValid = computed(() => {
   const password = nuevaContrasena.value;
   return (
-    password.length >= 8 &&
+    password.length >= 8 && // Asegúrate de que sea al menos 8 caracteres
     /[A-Z]/.test(password) &&
     /[a-z]/.test(password) &&
     /[0-9]/.test(password) &&
@@ -40,7 +43,7 @@ const cambiarContrasena = async () => {
 
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
       'encryptedPassword': encodedPassword,
     };
 
@@ -53,12 +56,7 @@ const cambiarContrasena = async () => {
     if (response.status === 200) {
       successMessage.value = 'Contraseña cambiada con éxito.';
       nuevaContrasena.value = '';
-      isPasswordChanged.value = true; // Marcamos que la contraseña fue cambiada
-      setTimeout(() => {
-        successMessage.value = '';
-        localStorage.removeItem('token');
-        router.push({ path: '/' });
-      }, 3000);
+      emit('close-modal'); // Emitir evento para cerrar el modal
     } else {
       throw new Error('La respuesta del servidor no fue exitosa');
     }
@@ -69,26 +67,30 @@ const cambiarContrasena = async () => {
     isLoading.value = false;
   }
 };
+
+// Opción adicional: Resetea la contraseña después de un cambio exitoso
+watch(successMessage, (newValue) => {
+  if (newValue) {
+    nuevaContrasena.value = ''; // Resetea la contraseña
+  }
+});
 </script>
 
 <template>
-  <main>
-    <div v-if="isModalVisible && !isPasswordChanged" class="modal">
+  <main v-if="isVisible">
+    <div class="modal">
       <div class="modal-content">
         <h2>Cambio de contraseña</h2>
         <div class="form">
           <form @submit.prevent="cambiarContrasena">
+            <input type="text" id="username" name="username" autocomplete="username" style="display: none;" />
+
             <div class="form-group">
               <label for="nuevaContrasena">Nueva Contraseña:</label>
-              <input 
-                type="password" 
-                id="nuevaContrasena" 
-                v-model="nuevaContrasena" 
-                required
-                autocomplete="new-password"
-              />
+              <input type="password" id="nuevaContrasena" v-model="nuevaContrasena" required
+                autocomplete="new-password" />
             </div>
-            
+
             <div v-if="!isPasswordValid && nuevaContrasena" class="error-message">
               La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos
             </div>
@@ -110,8 +112,9 @@ const cambiarContrasena = async () => {
   </main>
 </template>
 
+
 <style scoped>
-/* El estilo permanece igual */
+/* Estilo permanece igual */
 main {
   display: flex;
   justify-content: center;
