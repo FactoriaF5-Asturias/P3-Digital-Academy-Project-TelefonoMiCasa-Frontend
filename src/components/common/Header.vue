@@ -25,10 +25,24 @@ const openLoginPopup = () => {
 };
 
 
-const logout = () => {
-  isAuthenticated.value = false; 
-  router.push('/'); 
+const logout = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/api/v1/logout', {
+      method: 'POST',
+      credentials: 'include' 
+    });
+
+    if (response.ok) {
+      isAuthenticated.value = false; 
+      router.push('/'); 
+    } else {
+      console.error('Error al cerrar sesión:', response.status);
+    }
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+  }
 };
+
 </script>
 
 <template>
