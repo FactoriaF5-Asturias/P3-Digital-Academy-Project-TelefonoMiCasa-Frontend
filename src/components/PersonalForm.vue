@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, ref } from 'vue';
+import { submitPersonalForm } from '../stores/personalFormStore';
 
 const formData = reactive({
   nombre: '',
@@ -9,7 +10,9 @@ const formData = reactive({
   municipio: ''
 });
 
-const isVisible = ref(false); 
+const isVisible = ref(false);
+const isLoading = ref(false);
+const errorMessage = ref('');
 
 const openPopup = () => {
   isVisible.value = true;
@@ -23,9 +26,24 @@ const closePopup = () => {
   document.body.classList.remove('modal-open');
 };
 
-const submitForm = () => {
-  console.log('Datos enviados:', formData);
-  closePopup(); 
+const submitForm = async () => {
+  isLoading.value = true;
+  errorMessage.value = '';
+  
+  try {
+    const result = await submitPersonalForm(formData);
+    if (result.success) {
+      console.log('Datos enviados exitosamente:', result.data);
+      closePopup();
+    } else {
+      errorMessage.value = 'Error al enviar el formulario. Por favor, inténtelo de nuevo.';
+    }
+  } catch (error) {
+    errorMessage.value = 'Error al enviar el formulario. Por favor, inténtelo de nuevo.';
+    console.error('Error:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -69,9 +87,15 @@ const submitForm = () => {
                 <input type="text" class="form-control" id="municipio" v-model="formData.municipio" required />
               </div>
 
+              <div v-if="errorMessage" class="alert alert-danger mt-3">
+                {{ errorMessage }}
+              </div>
+
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary bg" @click="closePopup">Cerrar</button>
-                <button type="submit" class="btn-1 btn-secondary">Enviar</button>
+                <button type="button" class="btn btn-secondary bg" @click="closePopup" :disabled="isLoading">Cerrar</button>
+                <button type="submit" class="btn-1 btn-secondary" :disabled="isLoading">
+                  {{ isLoading ? 'Enviando...' : 'Enviar' }}
+                </button>
               </div>
             </form>
           </div>
@@ -80,7 +104,6 @@ const submitForm = () => {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .modal.fade {
@@ -91,13 +114,22 @@ const submitForm = () => {
 .modal-open {
   overflow: hidden;
 }
-.btn-1{
+
+.btn-1 {
   background-color: #650000 !important;
   border-radius: 10px;
   color: white;
 }
 
 .close {
-  margin-left: auto; 
+  margin-left: auto;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.alert {
+  margin-top: 1rem;
 }
 </style>
