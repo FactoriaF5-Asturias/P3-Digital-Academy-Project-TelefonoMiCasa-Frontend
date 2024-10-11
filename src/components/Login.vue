@@ -113,6 +113,11 @@ const validarCorreo = (correo) => {
   return patron.test(correo);
 };
 
+
+const encryptPassword = (password) => {
+  return btoa(password);
+};
+
 const submitRegister = async () => {
   if (!registerUsername.value || !registerPassword.value || !registerConfirmPassword.value) {
     registerErrorMessage.value = 'Por favor, rellena todos los campos para continuar.';
@@ -135,7 +140,7 @@ const submitRegister = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: registerUsername.value,
-        encryptedPassword: registerPassword.value,
+        encryptedPassword: encryptPassword(registerPassword.value), 
       }),
     });
 
@@ -231,6 +236,7 @@ defineExpose({ openPopup });
     </div>
   </div>
 </template>
+
 
 
 <style scoped>
