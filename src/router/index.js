@@ -33,7 +33,7 @@ const router = createRouter({
       path: '/public',
       name: 'Public',
       component: PublicView,
-      meta: { requiresAuth: true }
+      // meta: { requiresAuth: true }
     },
 
     {
