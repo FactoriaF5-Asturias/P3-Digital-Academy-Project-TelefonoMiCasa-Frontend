@@ -12,9 +12,11 @@ const isAuthenticated = ref(false);
 watch(router.currentRoute, (newRoute) => {
   const isUserView = newRoute.path.includes('/userview');
   const isAdminView = newRoute.path.includes('/adminview');
+  const isSalesmenView = newRoute.path.includes('/salesmendashboardview');
+
   
  
-  isAuthenticated.value = isUserView || isAdminView;
+  isAuthenticated.value = isUserView || isAdminView || isSalesmenView;
 });
 
 
