@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { submitPersonalForm } from '../stores/personalFormStore';
 
 const formData = reactive({
@@ -7,12 +7,14 @@ const formData = reactive({
   apellidos: '',
   telefono: '',
   email: '',
-  municipio: ''
+  municipio: '',
+  otroMunicipio: ''
 });
 
 const isVisible = ref(false);
 const isLoading = ref(false);
 const errorMessage = ref('');
+const showOtroMunicipio = ref(false);
 
 const openPopup = () => {
   isVisible.value = true;
@@ -31,7 +33,13 @@ const submitForm = async () => {
   errorMessage.value = '';
   
   try {
-    const result = await submitPersonalForm(formData);
+    const dataToSubmit = { ...formData };
+    if (dataToSubmit.municipio === 'otro') {
+      dataToSubmit.municipio = dataToSubmit.otroMunicipio;
+    }
+    delete dataToSubmit.otroMunicipio;
+
+    const result = await submitPersonalForm(dataToSubmit);
     if (result.success) {
       console.log('Datos enviados exitosamente:', result.data);
       closePopup();
@@ -45,6 +53,13 @@ const submitForm = async () => {
     isLoading.value = false;
   }
 };
+
+watch(() => formData.municipio, (newValue) => {
+  showOtroMunicipio.value = newValue === 'otro';
+  if (newValue !== 'otro') {
+    formData.otroMunicipio = '';
+  }
+});
 </script>
 
 <template>
@@ -84,7 +99,18 @@ const submitForm = async () => {
 
               <div class="form-group">
                 <label for="municipio">Municipio:</label>
-                <input type="text" class="form-control" id="municipio" v-model="formData.municipio" required />
+                <select class="form-control" id="municipio" v-model="formData.municipio" required>
+                  <option value="">Seleccione un municipio</option>
+                  <option value="gijon">Gijón</option>
+                  <option value="aviles">Avilés</option>
+                  <option value="oviedo">Oviedo</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+
+              <div v-if="showOtroMunicipio" class="form-group">
+                <label for="otroMunicipio">Especifique el municipio:</label>
+                <input type="text" class="form-control" id="otroMunicipio" v-model="formData.otroMunicipio" required />
               </div>
 
               <div v-if="errorMessage" class="alert alert-danger mt-3">
@@ -104,6 +130,7 @@ const submitForm = async () => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .button-container {
