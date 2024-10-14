@@ -1,3 +1,12 @@
+<script setup>
+import PersonalForm from '@/components/PersonalForm.vue';
+
+
+</script>
+
 <template>
-    lologramos
+    <PersonalForm/>
 </template>
+
+<style scoped>
+</style>
