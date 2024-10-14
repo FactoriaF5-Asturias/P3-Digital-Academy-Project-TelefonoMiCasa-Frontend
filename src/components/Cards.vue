@@ -1,8 +1,11 @@
-<script setup>
 
+
+<script setup>
 import { onMounted, ref } from 'vue';
 import { useSearchStore } from '../stores/searchStore';
 import { useRoute } from 'vue-router';
+import visitbutton from '@/components/VisitButton.vue'; 
+
 const route = useRoute();
 const searchStore = useSearchStore();
 const properties = ref([]);
@@ -13,16 +16,17 @@ const bathroomIcon = '/src/assets/icons/Bathtub.svg';
 const areaIcon = '/src/assets/icons/planos.svg';
 const maps = '/src/assets/icons/maps.svg';
 const defaultImage = 'https://cdn.pixabay.com/photo/2014/11/21/17/17/house-540796_1280.jpg';
-onMounted(() => {
-  properties.value = searchStore.properties; 
-});
 
+onMounted(() => {
+  properties.value = searchStore.properties;
+});
 </script>
 
 <template>
   <div class="properties-list">
     <div v-if="searchStore.loading" class="loading">Cargando propiedades...</div>
     <div v-if="!searchStore.loading && properties.length === 0" class="no-results">No hay propiedades disponibles para la búsqueda seleccionada.</div>
+    
     <div v-for="(property, index) in properties" :key="index" class="card">
       <div class="image-container">
         <img :src="property.house || defaultImage" alt="Property Image" class="property-image" />
@@ -35,29 +39,12 @@ onMounted(() => {
           <span>{{ property.address }}</span>
         </div>
         <div class="features">
-          <div class="feature">
-            <img :src="bedroomIcon" alt="Bedrooms Icon" class="icon" />
-            <span>{{ property.room || 'N/A' }} habs.</span>
-          </div>
-          <div class="feature">
-            <img :src="elevatorIcon" alt="Elevator Icon" class="icon" />
-            <span>{{ property.hasElevator ? 'Sí' : 'No' }}</span>
-          </div>
-          <div class="feature">
-            <img :src="floorIcon" alt="Floor Icon" class="icon" />
-            <span>planta {{ property.floors || 'N/A' }} </span>
-          </div>
-          <div class="feature">
-            <img :src="bathroomIcon" alt="Bathroom Icon" class="icon" />
-            <span>{{ property.bathroom || 'N/A' }} baño</span>
-          </div>
-          <div class="feature">
-            <img :src="areaIcon" alt="Area Icon" class="icon" />
-            <span>{{ property.area }} m²</span>
-          </div>
+         
         </div>
         <div class="actions">
-          <button class="schedule-visit">Agendar visita</button>
+         
+          <visitbutton :propertyId="property.id" />
+
           <button class="favorite">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -154,18 +141,20 @@ onMounted(() => {
   height: 30px;
   margin-right: 5px;
 }
+
 .actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  display: none;
 }
+
 .no-results {
   text-align: center;
   font-size: 18px;
   color: #666;
   margin-top: 20px;
 }
+
 .schedule-visit {
   background-color: #D6B666;
   color: white;
@@ -174,12 +163,15 @@ onMounted(() => {
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
+  
 }
+
 .favorite {
   background: none;
   border: none;
   cursor: pointer;
 }
+
 .heart-icon {
   width: 24px;
   height: 24px;
@@ -218,37 +210,6 @@ onMounted(() => {
   width: 30px;
   height: 30px;
   margin-right: 5px;
-}
-.actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  display: none;
-}
-.no-results {
-  text-align: center;
-  font-size: 18px;
-  color: #666;
-  margin-top: 20px;
-}
-.schedule-visit {
-  background-color: #D6B666;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
-.favorite {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-.heart-icon {
-  width: 24px;
-  height: 24px;
-  stroke: #999;
 }
 
 @media (max-width: 768px) {
@@ -296,3 +257,4 @@ onMounted(() => {
 }
 
 </style>
+
