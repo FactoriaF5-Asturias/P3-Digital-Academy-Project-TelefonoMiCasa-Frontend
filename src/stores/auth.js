@@ -1,4 +1,4 @@
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
 import AuthService from "@/core/apis/spring/auth/AuthService";
 import Credentials from "@/core/models/Credentials";
@@ -41,13 +41,27 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    function logout() {
-        resetUser();
+    async function logout() {
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/logout', {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                resetUser();
+            } else {
+                throw new Error('Error al cerrar sesión');
+            }
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+            throw error;
+        }
     }
 
     return { 
         user, 
         login,
-        logout 
+        logout
     };
 });
