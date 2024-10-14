@@ -29,7 +29,7 @@ const closePopup = () => {
 };
 
 const submitForm = async () => {
-  if (!formData.value.type || !formData.value.price || !formData.value.zone || !formData.value.area || !formData.value.address || !formData.value.description) {
+  if (!formData.value.type || !formData.value.price || !formData.value.zone || !formData.value.area || !formData.value.address || !formData.value.description || !formData.value.action) {
     errorMessage.value = 'Por favor, complete todos los campos requeridos.';
     return;
   }

@@ -1,5 +1,3 @@
-
-
 <script setup>
 
 import { defineProps } from 'vue';
@@ -27,6 +25,7 @@ console.log("Properties recibidas:", props.properties);
           <th>Zona</th>
           <th>Superficie (m²)</th>
           <th>Descripción</th>
+          <th>Acción</th>
         </tr>
       </thead>
       <tbody>
@@ -40,6 +39,7 @@ console.log("Properties recibidas:", props.properties);
           <td>{{ property.zone }}</td> 
           <td>{{ property.area }}</td> 
           <td>{{ property.description }}</td> 
+          <td> {{ property.action }}</td>
         </tr>
       </tbody>
     </table>

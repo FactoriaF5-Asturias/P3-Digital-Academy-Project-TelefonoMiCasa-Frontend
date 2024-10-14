@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-
 import Salesmenformproperties from './Salesmenformproperties.vue';
 import AddIPropertiesButton from './AddIPropertiesButton.vue';
 import PropertyList from './PropertyList.vue'; 
@@ -65,14 +64,10 @@ const addPropertyToList = (newProperty) => {
       <div v-if="currentView === 'inmuebles'">
         <div class="title-button-container">
           <h3 class="sub-title">Alta y Baja de Inmuebles</h3>
-          
-          <AddIPropertiesButton @add="showPopup" />
+          <AddIPropertiesButton @add="showPopup" @property-added="addPropertyToList" />
         </div>
-
        
         <PropertyList :properties="properties" />
-
-        <Salesmenformproperties v-if="isPopupVisible" @close="closePopup" @property-added="addPropertyToList" />
       </div>
 
       <div v-if="currentView === 'mas-visitados'">
@@ -83,70 +78,32 @@ const addPropertyToList = (newProperty) => {
         <h3 class="sub-title">Historial de Visitas Cliente</h3>
       </div>
     </div>
-
-  
-    <Salesmenformproperties v-if="isPopupVisible" @close="closePopup" @property-added="addPropertyToList" />
   </div>
 </template>
 
-<style scoped>
-.bg-granate {
-  background-color: #800020;
-}
-
-.salesmen-dashboard {
-  background-color: #ffffff;
-  min-height: 100vh;
-}
-
-.main-title {
-  font-size: 1.5rem;
-  color: #800606;
-}
-
-.sub-title {
-  font-size: 1.2rem;
-  color: #555;
-}
-
-.title-button-container {
-  display: flex;
-  align-items: center;
-  gap: 80px;
-}
-
-.container {
-  margin-top: 20px;
-}
-</style>
 
 
 <style scoped>
 .bg-granate {
   background-color: #800020;
 }
-
 .salesmen-dashboard {
   background-color: #ffffff;
   min-height: 100vh;
 }
-
 .main-title {
   font-size: 1.5rem;
   color: #800606;
 }
-
 .sub-title {
   font-size: 1.2rem;
   color: #555;
 }
-
 .title-button-container {
   display: flex;
   align-items: center;
   gap: 80px;
 }
-
 .container {
   margin-top: 20px;
 }
