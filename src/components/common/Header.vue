@@ -1,21 +1,14 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth'; // Asegúrate de que la ruta sea correcta
+import { useAuthStore } from '@/stores/auth';
 import LoginPopup from '../Login.vue';
 
 const loginPopupRef = ref(null);
 const router = useRouter();
 const authStore = useAuthStore();
-const isAuthenticated = ref(false);
 
-watch(router.currentRoute, (newRoute) => {
-  const isUserView = newRoute.path.includes('/userview');
-  const isAdminView = newRoute.path.includes('/adminview');
-  const isSalesmenView = newRoute.path.includes('/salesmendashboardview');
-  
-  isAuthenticated.value = isUserView || isAdminView || isSalesmenView;
-});
+const isAuthenticated = computed(() => authStore.user.isAuthenticated);
 
 const openLoginPopup = () => {
   if (loginPopupRef.value) {
@@ -25,23 +18,8 @@ const openLoginPopup = () => {
 
 const logout = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/v1/logout', {
-      method: 'POST',
-      credentials: 'include'
-    });
-
-    if (response.ok) {
-      // Limpiar el estado de Pinia
-      authStore.logout();
-      
-      // Actualizar el estado local
-      isAuthenticated.value = false;
-      
-      // Redirigir al inicio
-      router.push('/');
-    } else {
-      console.error('Error al cerrar sesión:', response.status);
-    }
+    await authStore.logout();
+    router.push('/');
   } catch (error) {
     console.error('Error al cerrar sesión:', error);
   }
