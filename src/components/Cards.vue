@@ -43,7 +43,8 @@ onMounted(() => {
         </div>
         <div class="actions">
          
-          <visitbutton /> 
+          <visitbutton :propertyId="property.id" />
+
 
         
           <button class="favorite">
