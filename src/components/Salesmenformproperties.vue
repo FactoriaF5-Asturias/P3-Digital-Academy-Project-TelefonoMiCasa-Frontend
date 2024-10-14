@@ -1,158 +1,167 @@
+
 <script setup>
-import { ref, computed, defineEmits } from 'vue';
+import { ref } from 'vue';
+import axios from 'axios';
+import {  defineEmits } from 'vue';
 
 const emit = defineEmits(['close', 'property-added']);
+
 const isVisible = ref(true);
+
 const formData = ref({
-  tipo: '',
-  precio: '',
-  habitaciones: '',
-  banos: '',
-  ascensor: '',
-  planta: '',
-  zona: '',
-  m2: '',
-  direccion: '',  
-  descripcion: ''
+  type: '',
+  price: '',
+  room: null,
+  bathroom: null,
+  hasElevator: null,
+  floors: null,
+  zone: '',
+  area: null,
+  address: '',
+  description: '',
+  action: ''
 });
 
 const errorMessage = ref('');
 
-
-const isCasaSelected = computed(() => formData.value.tipo === 'Casa');
-const isTrasteroSelected = computed(() => formData.value.tipo === 'Trastero');
-
-
 const closePopup = () => {
-  emit('close');
+  isVisible.value = false;
 };
 
-
-const submitForm = () => {
-  if (
-    !formData.value.tipo ||
-    !formData.value.precio ||
-    !formData.value.zona ||
-    !formData.value.m2 ||
-    !formData.value.direccion ||
-    !formData.value.descripcion ||
-    (!isTrasteroSelected.value && !formData.value.habitaciones) ||
-    (!isTrasteroSelected.value && !formData.value.banos) ||
-    (!isTrasteroSelected.value && !formData.value.planta)
-  ) {
+const submitForm = async () => {
+  if (!formData.value.type || !formData.value.price || !formData.value.zone || !formData.value.area || !formData.value.address || !formData.value.description) {
     errorMessage.value = 'Por favor, complete todos los campos requeridos.';
     return;
   }
+  console.log("Datos enviados al backend:", formData.value); 
+  try {
+    const response = await axios.post('http://localhost:8080/api/v1/property', { ...formData.value }, { withCredentials: true });
+    emit('property-added', { ...formData.value });
+    closePopup();
+  } catch (error) {
+    console.error('Error al añadir el inmueble:', error);
+    errorMessage.value = 'Hubo un error al añadir el inmueble.';
 
-  errorMessage.value = ''; 
-  
-  emit('property-added', { ...formData.value });
-  closePopup();
+  }
+
+ 
 };
+
+
 </script>
+
+
 
 <template>
   <div v-if="isVisible" class="popup-overlay" @click.self="closePopup">
     <div class="popup-content">
-
       <button class="close-button" @click="closePopup">×</button>
-
       <h3 class="popup-title">Añadir Inmueble</h3>
       <form @submit.prevent="submitForm">
         <div class="form-group">
-          <label for="tipo">Tipo:</label>
-          <select id="tipo" v-model="formData.tipo">
+          <label for="type">Tipo:</label>
+          <select id="type" v-model="formData.type">
             <option value="" disabled>Seleccionar</option>
-            <option value="Apartamento">Apartamento</option>
-            <option value="Casa">Casa</option>
-            <option value="Trastero">Trastero</option>
+            <option value="flat">Apartamento</option>
+            <option value="house">Casa</option>
+            <option value="garage">Garaje</option>
+            <option value="storageroom">Trastero</option>
           </select>
         </div>
 
-        <div class="form-row">
-          <div class="form-group half-width">
-            <label for="precio">Precio:</label>
-            <select id="precio" v-model="formData.precio">
-              <option value="" disabled>Seleccionar</option>
-              <option value="100000">100,000€</option>
-              <option value="200000">200,000€</option>
-              <option value="300000">300,000€</option>
-            </select>
-          </div>
-
-          <div class="form-group half-width">
-            <label for="habitaciones">Nº hab.:</label>
-            <select id="habitaciones" v-model="formData.habitaciones" :disabled="isTrasteroSelected">
-              <option value="" disabled>Seleccionar</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group half-width">
-            <label for="banos">Nº baños:</label>
-            <select id="banos" v-model="formData.banos" :disabled="isTrasteroSelected">
-              <option value="" disabled>Seleccionar</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-          <div class="form-group half-width">
-            <label for="ascensor">Ascensor:</label>
-            <select id="ascensor" v-model="formData.ascensor" :disabled="isCasaSelected || isTrasteroSelected">
-              <option value="" disabled>Seleccionar</option>
-              <option value="Sí">Sí</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group half-width">
-            <label for="planta">Planta:</label>
-            <select id="planta" v-model="formData.planta" :disabled="isTrasteroSelected">
-              <option value="" disabled>Seleccionar</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-          <div class="form-group half-width">
-            <label for="zona">Zona:</label>
-            <select id="zona" v-model="formData.zona">
-              <option value="" disabled>Seleccionar</option>
-              <option value="Área de Avilés">Área de Avilés</option>
-              <option value="Área de Gijón">Área de Gijón</option>
-              <option value="Área de Oviedo">Área de Oviedo</option>
-              <option value="Caudal">Caudal</option>
-              <option value="Eo-Navia">Eo-Navia</option>
-              <option value="Nalón">Nalón</option>
-              <option value="Narcea">Narcea</option>
-              <option value="Oriente">Oriente</option>
-            </select>
-          </div>
-        </div>
-
-        
         <div class="form-group">
-          <label for="direccion">Dirección:</label>
-          <input type="text" id="direccion" v-model="formData.direccion" />
+          <label for="price">Precio:</label>
+          <select id="price" v-model="formData.price">
+            <option value="" disabled>Seleccionar</option>
+            <option value="100000">20,000€</option>
+            <option value="100000">50,000€</option>
+            <option value="100000">100,000€</option>
+            <option value="200000">200,000€</option>
+            <option value="300000">300,000€</option>
+          </select>
         </div>
 
-        <div class="form-row">
-          <div class="form-group small-width">
-            <label for="m2">m2:</label>
-            <input type="number" id="m2" v-model="formData.m2" class="small-input" />
-          </div>
+        <div class="form-group" v-if="formData.type === 'flat' || formData.type === 'house'">
+          <label for="room">Nº Habitaciones:</label>
+          <select id="room" v-model="formData.room">
+            <option value="" disabled>Seleccionar</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+
+        <div class="form-group" v-if="formData.type === 'flat' || formData.type === 'house'">
+          <label for="bathroom">Nº Baños:</label>
+          <select id="bathroom" v-model="formData.bathroom">
+            <option value="" disabled>Seleccionar</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+
+        <div class="form-group" v-if="formData.type === 'flat'">
+          <label for="hasElevator">Ascensor:</label>
+          <select id="hasElevator" v-model="formData.hasElevator">
+            <option value="" disabled>Seleccionar</option>
+            <option value="true">Sí</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+
+        <div class="form-group" v-if="formData.type === 'flat' || formData.type === 'house'">
+          <label for="floors">Planta:</label>
+          <select id="floors" v-model="formData.floors">
+            <option value="" disabled>Seleccionar</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
         </div>
 
         <div class="form-group">
-          <label for="descripcion">Descripción:</label>
-          <textarea id="descripcion" v-model="formData.descripcion"></textarea>
+          <label for="zone">Zona:</label>
+          <select id="zone" v-model="formData.zone">
+            <option value="" disabled>Seleccionar</option>
+            <option value="Área de Avilés">Área de Avilés</option>
+            <option value="Área de Gijón">Área de Gijón</option>
+            <option value="Área de Oviedo">Área de Oviedo</option>
+            <option value="Caudal">Caudal</option>
+            <option value="Eo-Navia">Eo-Navia</option>
+            <option value="Nalón">Nalón</option>
+            <option value="Narcea">Narcea</option>
+            <option value="Oriente">Oriente</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="area">Superficie (m2):</label>
+          <select id="area" v-model="formData.area">
+            <option value="" disabled>Seleccionar</option>
+            <option value="50">50 m²</option>
+            <option value="75">75 m²</option>
+            <option value="100">100 m²</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Dirección:</label>
+          <input type="text" id="address" v-model="formData.address" />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descripción:</label>
+          <textarea id="description" v-model="formData.description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="action">Acción:</label>
+          <select id="action" v-model="formData.action">
+            <option value="" disabled>Seleccionar</option>
+            <option value="venta">Venta</option>
+            <option value="alquiler">Alquiler</option>
+          </select>
         </div>
 
         <div v-if="errorMessage" class="error-message">
@@ -167,6 +176,8 @@ const submitForm = () => {
   </div>
 </template>
 
+
+
 <style scoped>
 .popup-overlay {
   position: fixed;
@@ -178,6 +189,7 @@ const submitForm = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2000;
 }
 
 .popup-content {
@@ -186,8 +198,8 @@ const submitForm = () => {
   border-radius: 8px;
   width: 350px;
   max-width: 90%;
-  max-height: 90vh; 
-  overflow-y: auto; 
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #800020;
   position: relative;
@@ -240,12 +252,11 @@ const submitForm = () => {
   background-color: #ffffff;
   color: #333333;
   box-sizing: border-box;
-
 }
 
 .form-group textarea {
   resize: none;
-  height: 50px; 
+  height: 50px;
 }
 
 .form-group input:focus,
