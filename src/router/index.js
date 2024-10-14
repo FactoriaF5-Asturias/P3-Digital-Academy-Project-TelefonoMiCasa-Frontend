@@ -47,6 +47,8 @@ const router = createRouter({
       component: UserView,
       // meta: { requiresAuth: true }
     }
+
+ 
   ]
 })
 
