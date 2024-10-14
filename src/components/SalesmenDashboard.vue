@@ -21,9 +21,10 @@ const closePopup = () => {
   isPopupVisible.value = false;
 };
 
-
 const addPropertyToList = (newProperty) => {
-  properties.value.push(newProperty);
+  console.log("Nueva propiedad recibida desde el formulario:", newProperty);  
+  properties.value.push(newProperty); 
+  console.log("Lista actualizada de propiedades:", properties.value);  
 };
 </script>
 
@@ -70,6 +71,8 @@ const addPropertyToList = (newProperty) => {
 
        
         <PropertyList :properties="properties" />
+
+        <Salesmenformproperties v-if="isPopupVisible" @close="closePopup" @property-added="addPropertyToList" />
       </div>
 
       <div v-if="currentView === 'mas-visitados'">
