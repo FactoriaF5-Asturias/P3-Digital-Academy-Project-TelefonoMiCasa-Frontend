@@ -1,13 +1,11 @@
-
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import {  defineEmits } from 'vue';
+import { defineEmits } from 'vue';
 
 const emit = defineEmits(['close', 'property-added']);
 
 const isVisible = ref(true);
-
 const formData = ref({
   type: '',
   price: '',
@@ -15,7 +13,7 @@ const formData = ref({
   bathroom: null,
   hasElevator: null,
   floors: null,
-  zone: '',
+  zone: '', 
   area: null,
   address: '',
   description: '',
@@ -33,7 +31,7 @@ const submitForm = async () => {
     errorMessage.value = 'Por favor, complete todos los campos requeridos.';
     return;
   }
-  console.log("Datos enviados al backend:", formData.value); 
+  console.log("Datos enviados al backend:", formData.value);
   try {
     const response = await axios.post('http://localhost:8080/api/v1/property', { ...formData.value }, { withCredentials: true });
     emit('property-added', { ...formData.value });
@@ -41,15 +39,36 @@ const submitForm = async () => {
   } catch (error) {
     console.error('Error al añadir el inmueble:', error);
     errorMessage.value = 'Hubo un error al añadir el inmueble.';
-
   }
+};
 
- 
+const getZone = async () => {
+  try {
+    const userResponse = await axios.get('http://localhost:8080/api/v1/login', { withCredentials: true });
+    const currentUsername = userResponse.data.username; 
+    
+    const salesmenResponse = await axios.get('http://localhost:8080/api/v1/salesmen', { withCredentials: true });
+    
+    const currentSalesman = salesmenResponse.data.find(salesman => salesman.username === currentUsername);
+    
+    if (currentSalesman && currentSalesman.zone) {
+      formData.value.zone = currentSalesman.zone.name; 
+    } else {
+      errorMessage.value = 'No se encontró la zona para el vendedor actual.';
+    }
+  } catch (error) {
+    console.error('Error al obtener la zona del salesman:', error);
+    errorMessage.value = 'Hubo un error al obtener la zona.';
+  }
 };
 
 
-</script>
 
+
+onMounted(() => {
+  getZone();
+});
+</script>
 
 
 <template>
@@ -121,19 +140,12 @@ const submitForm = async () => {
         </div>
 
         <div class="form-group">
-          <label for="zone">Zona:</label>
-          <select id="zone" v-model="formData.zone">
-            <option value="" disabled>Seleccionar</option>
-            <option value="Área de Avilés">Área de Avilés</option>
-            <option value="Área de Gijón">Área de Gijón</option>
-            <option value="Área de Oviedo">Área de Oviedo</option>
-            <option value="Caudal">Caudal</option>
-            <option value="Eo-Navia">Eo-Navia</option>
-            <option value="Nalón">Nalón</option>
-            <option value="Narcea">Narcea</option>
-            <option value="Oriente">Oriente</option>
-          </select>
+         <label for="zone">Zona:</label>
+            <select id="zone" v-model="formData.zone" disabled>
+              <option :value="formData.zone">{{ formData.zone }}</option>
+            </select>
         </div>
+
 
         <div class="form-group">
           <label for="area">Superficie (m2):</label>
