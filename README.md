@@ -103,6 +103,8 @@ VITE_API_ENDPOINT_TELEFONOMICASA=http://localhost:8080/api/v1
 
 # User flow
 
+![userflow](https://github.com/user-attachments/assets/98685858-8ef9-4c31-979b-cc58402e73b6)
+
 # Project tree
 
 ```
