@@ -16,6 +16,21 @@ The platform offers quick access to the developers' Github profiles via icons.
 
 This application aims to provide a friendly, intuitive, and efficient experience for both users and administrators/agents.
 
+<img width="1275" alt="Captura de pantalla 2024-10-15 a las 10 57 44" src="https://github.com/user-attachments/assets/a6251caa-d952-487e-9efa-505b64ec2217">
+
+<img width="1272" alt="Captura de pantalla 2024-10-15 a las 10 57 51" src="https://github.com/user-attachments/assets/5b85e62d-5781-4248-833f-c8ffb00c9357">
+
+<img width="1275" alt="Captura de pantalla 2024-10-15 a las 10 57 59" src="https://github.com/user-attachments/assets/5fe11299-5ab4-4a5a-8728-01c72038e61b">
+
+<img width="1271" alt="Captura de pantalla 2024-10-15 a las 11 06 06" src="https://github.com/user-attachments/assets/b2cb787f-e041-4177-bf1d-c583c7891500">
+
+<img width="1274" alt="Captura de pantalla 2024-10-15 a las 11 00 30" src="https://github.com/user-attachments/assets/a4d7dc8a-657c-4cb8-9ee3-88e9c0222b53">
+
+<img width="1272" alt="Captura de pantalla 2024-10-15 a las 11 00 37" src="https://github.com/user-attachments/assets/7aff83ee-334c-4e49-a3e2-6c210debf69b">
+
+<img width="1273" alt="Captura de pantalla 2024-10-15 a las 11 01 47" src="https://github.com/user-attachments/assets/3a1d87c4-3250-43cf-b5b6-03f1cfd6e138">
+
+<img width="1272" alt="Captura de pantalla 2024-10-15 a las 11 02 02" src="https://github.com/user-attachments/assets/08d4967f-80be-498e-924a-3f5477a63704">
 
 
 ## :hammer_and_wrench: Skills
