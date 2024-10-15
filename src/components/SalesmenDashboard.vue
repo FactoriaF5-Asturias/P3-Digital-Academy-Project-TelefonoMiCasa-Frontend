@@ -1,6 +1,6 @@
-
 <script setup>
 import { ref } from 'vue';
+import axios from 'axios'; // Importa axios
 import Salesmenformproperties from './Salesmenformproperties.vue';
 import AddIPropertiesButton from './AddIPropertiesButton.vue';
 import PropertyList from './PropertyList.vue'; 
@@ -10,7 +10,6 @@ const currentView = ref('');
 const isPopupVisible = ref(false);
 const properties = ref([]);
 const appointments = ref([]);
-
 
 const changeView = async (view) => {
   currentView.value = view;
@@ -39,6 +38,7 @@ const addPropertyToList = (newProperty) => {
   properties.value.push(newProperty); 
 };
 </script>
+
 
 <template>
   <div class="salesmen-dashboard">
