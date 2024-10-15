@@ -65,10 +65,10 @@ function openPopup() {
         <div>
           <label for="timeSlot">Franja Horaria:</label>
           <select id="timeSlot" v-model="timeSlot" required>
-            <option value="9-12">9:00 a 12:00</option>
-            <option value="12-14">12:00 a 14:00</option>
-            <option value="16-18">16:00 a 18:00</option>
-            <option value="18-20">18:00 a 20:00</option>
+            <option value="9:00-12:00">9:00 a 12:00</option>
+            <option value="12:00-14:00">12:00 a 14:00</option>
+            <option value="16:00-18:00">16:00 a 18:00</option>
+            <option value="18:00-20:00">18:00 a 20:00</option>
           </select>
         </div>
 
