@@ -17,7 +17,8 @@ const formData = ref({
   area: null,
   address: '',
   description: '',
-  action: ''
+  action: '',
+  userId: null  
 });
 
 const errorMessage = ref('');
@@ -27,7 +28,7 @@ const closePopup = () => {
 };
 
 const submitForm = async () => {
-  if (!formData.value.type || !formData.value.price || !formData.value.zone || !formData.value.area || !formData.value.address || !formData.value.description || !formData.value.action) {
+  if (!formData.value.type || !formData.value.price || !formData.value.zone || !formData.value.area || !formData.value.address || !formData.value.description || !formData.value.action || !formData.value.userId) {
     errorMessage.value = 'Por favor, complete todos los campos requeridos.';
     return;
   }
@@ -42,13 +43,13 @@ const submitForm = async () => {
   }
 };
 
-const getZone = async () => {
+const getUserInfo = async () => {
   try {
     const userResponse = await axios.get('http://localhost:8080/api/v1/login', { withCredentials: true });
-    const currentUsername = userResponse.data.username; 
+    const currentUsername = userResponse.data.username;
+    formData.value.userId = userResponse.data.id; 
     
     const salesmenResponse = await axios.get('http://localhost:8080/api/v1/salesmen', { withCredentials: true });
-    
     const currentSalesman = salesmenResponse.data.find(salesman => salesman.username === currentUsername);
     
     if (currentSalesman && currentSalesman.zone) {
@@ -57,18 +58,16 @@ const getZone = async () => {
       errorMessage.value = 'No se encontró la zona para el vendedor actual.';
     }
   } catch (error) {
-    console.error('Error al obtener la zona del salesman:', error);
-    errorMessage.value = 'Hubo un error al obtener la zona.';
+    console.error('Error al obtener la información del usuario:', error);
+    errorMessage.value = 'Hubo un error al obtener la información del usuario.';
   }
 };
 
-
-
-
 onMounted(() => {
-  getZone();
+  getUserInfo();
 });
 </script>
+
 
 
 <template>

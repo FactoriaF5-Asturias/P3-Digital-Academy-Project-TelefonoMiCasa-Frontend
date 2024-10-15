@@ -1,8 +1,33 @@
 <script setup>
-import { defineProps } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
+// Propiedad para recibir el ID del usuario
 const props = defineProps({
-  appointments: Array, 
+  userId: {
+    type: Number,
+    required: true
+  }
+});
+
+// Variable para almacenar las citas
+const appointments = ref([]);
+
+// Función para obtener citas del usuario
+const fetchAppointments = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/v1/appointments/user/${props.userId}`, {
+      withCredentials: true // Incluir credenciales en la solicitud
+    });
+    appointments.value = response.data; // Guardar las citas en la variable
+  } catch (error) {
+    console.error("Error al obtener las citas de cliente:", error);
+  }
+};
+
+// Cargar las citas al montar el componente
+onMounted(() => {
+  fetchAppointments();
 });
 </script>
 

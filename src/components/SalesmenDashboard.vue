@@ -1,6 +1,6 @@
-
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 import Salesmenformproperties from './Salesmenformproperties.vue';
 import AddIPropertiesButton from './AddIPropertiesButton.vue';
 import PropertyList from './PropertyList.vue'; 
@@ -10,11 +10,11 @@ const currentView = ref('');
 const isPopupVisible = ref(false);
 const properties = ref([]);
 const appointments = ref([]);
-
+const userId = ref(''); 
 
 const changeView = async (view) => {
   currentView.value = view;
-  
+
   if (view === 'visitas-cliente') {
     try {
       const response = await axios.get('http://localhost:8080/api/v1/appointments', {
@@ -38,7 +38,32 @@ const closePopup = () => {
 const addPropertyToList = (newProperty) => {
   properties.value.push(newProperty); 
 };
+
+onMounted(async () => {
+  try {
+    const userResponse = await axios.get('http://localhost:8080/api/v1/login', {
+      withCredentials: true
+    });
+
+    console.log('Respuesta de la API de inicio de sesión:', userResponse.data); 
+    userId.value = userResponse.data.id; 
+
+    if (userId.value) {
+      const propertiesResponse = await axios.get(`http://localhost:8080/api/v1/user/${userId.value}`, { 
+        withCredentials: true 
+      });
+      properties.value = propertiesResponse.data; 
+    } else {
+      console.error('El ID del usuario no está definido');
+    }
+  } catch (error) {
+    console.error('Error al obtener las propiedades o el usuario:', error);
+  }
+});
+
+
 </script>
+
 
 <template>
   <div class="salesmen-dashboard">
@@ -80,7 +105,7 @@ const addPropertyToList = (newProperty) => {
           <AddIPropertiesButton @add="showPopup" @property-added="addPropertyToList" />
         </div>
        
-        <PropertyList :properties="properties" />
+        <PropertyList :userId="userId" :properties="properties" /> 
       </div>
 
       <div v-if="currentView === 'mas-visitados'">
@@ -88,13 +113,14 @@ const addPropertyToList = (newProperty) => {
       </div>
 
       <div v-if="currentView === 'visitas-cliente'">
-        <CustomerVisitsTable :appointments="appointments" /> <!-- Pasamos las citas al componente -->
+        <CustomerVisitsTable :userId="userId" />
       </div>
+
+
+      <Salesmenformproperties v-if="isPopupVisible" @close="closePopup" @property-added="addPropertyToList" />
     </div>
   </div>
 </template>
-
-
 
 <style scoped>
 .bg-granate {

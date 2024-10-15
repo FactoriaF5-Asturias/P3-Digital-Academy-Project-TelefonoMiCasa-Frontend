@@ -13,37 +13,31 @@ console.log("Properties recibidas:", props.properties);
 
 <template>
   <div class="property-list">
-   
     <table class="property-table" v-if="properties.length">
       <thead>
         <tr>
-          <th>Tipo</th>
+          <th>Descripción</th>
           <th>Precio (€)</th>
           <th>Habitaciones</th>
           <th>Baños</th>
           <th>Planta</th>
-          <th>Zona</th>
           <th>Superficie (m²)</th>
-          <th>Descripción</th>
           <th>Acción</th>
         </tr>
       </thead>
       <tbody>
-       
         <tr v-for="(property, index) in properties" :key="index">
-          <td>{{ property.type }}</td> 
-          <td>{{ property.price }}</td> 
-          <td>{{ property.room || 'N/A' }}</td> 
-          <td>{{ property.bathroom || 'N/A' }}</td> 
-          <td>{{ property.floors || 'N/A' }}</td> 
-          <td>{{ property.zone }}</td> 
-          <td>{{ property.area }}</td> 
-          <td>{{ property.description }}</td> 
-          <td> {{ property.action }}</td>
+          <td>{{ property.description }}</td>
+          <td>{{ property.price }}</td>
+          <td>{{ property.room || 'N/A' }}</td>
+          <td>{{ property.bathroom || 'N/A' }}</td>
+          <td>{{ property.floors || 'N/A' }}</td>
+          <td>{{ property.area }}</td>
+          <td>{{ property.action }}</td>
         </tr>
       </tbody>
     </table>
-    
+
     <p v-else>No hay inmuebles añadidos todavía.</p>
   </div>
 </template>
