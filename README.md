@@ -79,15 +79,7 @@ npm run build
 npm run test:unit
 ```
 
-## Authors
-
-- [@AntonellaEL](https://github.com/AntonellaEL)
-- [@hugoperez11](https://github.com/hugoperez11)
-- [@eyadcode4](https://github.com/eyadcode4)
-- [@jorgecas71](https://github.com/Jorgecas71)
-- [@JuliaParra](https://github.com/JuliaParra)
-- [@piperiver97](https://github.com/piperiver97?tab=repositories)
-- [@pablosja](https://github.com/pablosja)
+VITE_API_ENDPOINT_TELEFONOMICASA=http://localhost:8080/api/v1
 
 ```
 P3-Digital-Academy-Project-TelefonoMiCasa-Frontend
@@ -226,3 +218,13 @@ P3-Digital-Academy-Project-TelefonoMiCasa-Frontend
 └─ vitest.config.js
 
 ```
+
+## Authors
+
+- [@AntonellaEL](https://github.com/AntonellaEL)
+- [@hugoperez11](https://github.com/hugoperez11)
+- [@eyadcode4](https://github.com/eyadcode4)
+- [@jorgecas71](https://github.com/Jorgecas71)
+- [@JuliaParra](https://github.com/JuliaParra)
+- [@piperiver97](https://github.com/piperiver97?tab=repositories)
+- [@pablosja](https://github.com/pablosja)
