@@ -3,10 +3,14 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
 
 const props = defineProps ({
   propertyId: Number
 })
+
+const authStore = useAuthStore();
+
 const name = ref('');
 const phone = ref('');
 const timeSlot = ref('');
@@ -23,8 +27,10 @@ async function submitForm() {
     name: name.value,
     phone: phone.value,
     timeSlot: timeSlot.value,
-    propertyId: props.propertyId 
+    propertyId: props.propertyId,
+    username: authStore.user.username
   };
+  
  console.log("datos enviados",formData);
  
   try {
