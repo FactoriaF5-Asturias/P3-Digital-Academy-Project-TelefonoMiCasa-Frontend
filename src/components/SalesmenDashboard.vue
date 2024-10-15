@@ -105,7 +105,7 @@ onMounted(async () => {
           <AddIPropertiesButton @add="showPopup" @property-added="addPropertyToList" />
         </div>
        
-        <PropertyList :userId="userId" :properties="properties" /> <!-- Pasar propiedades al componente hijo -->
+        <PropertyList :userId="userId" :properties="properties" /> 
       </div>
 
       <div v-if="currentView === 'mas-visitados'">
@@ -113,8 +113,9 @@ onMounted(async () => {
       </div>
 
       <div v-if="currentView === 'visitas-cliente'">
-        <CustomerVisitsTable :appointments="appointments" />
+        <CustomerVisitsTable :userId="userId" />
       </div>
+
 
       <Salesmenformproperties v-if="isPopupVisible" @close="closePopup" @property-added="addPropertyToList" />
     </div>
