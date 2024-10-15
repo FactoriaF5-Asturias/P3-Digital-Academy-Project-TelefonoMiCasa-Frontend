@@ -88,3 +88,141 @@ npm run test:unit
 - [@JuliaParra](https://github.com/JuliaParra)
 - [@piperiver97](https://github.com/piperiver97?tab=repositories)
 - [@pablosja](https://github.com/pablosja)
+
+```
+P3-Digital-Academy-Project-TelefonoMiCasa-Frontend
+├─ .env
+├─ .git
+│  ├─ COMMIT_EDITMSG
+│  ├─ FETCH_HEAD
+│  ├─ HEAD
+│  ├─ ORIG_HEAD
+│  ├─ branches
+│  ├─ config
+│  ├─ description
+│  ├─ hooks
+│  │  ├─ applypatch-msg.sample
+│  │  ├─ commit-msg.sample
+│  │  ├─ post-update.sample
+│  │  ├─ pre-applypatch.sample
+│  │  ├─ pre-commit.sample
+│  │  ├─ pre-push.sample
+│  │  ├─ pre-rebase.sample
+│  │  ├─ pre-receive.sample
+│  │  ├─ prepare-commit-msg.sample
+│  │  └─ update.sample
+│  ├─ index
+│  ├─ info
+│  │  └─ exclude
+
+│     ├─ heads
+│     │  ├─ dev
+│     │  ├─ feature
+│     │  │  ├─ buscador
+│     │  │  ├─ client
+│     │  │  ├─ env
+│     │  │  ├─ rent
+│     │  │  ├─ select
+│     │  │  └─ viewclient
+│     │  ├─ main
+│     │  └─ register
+│     ├─ remotes
+│     │  └─ origin
+│     │     ├─ HEAD
+│     │     ├─ dev
+│     │     └─ feature
+│     │        └─ rent
+│     └─ tags
+├─ .gitignore
+├─ README.md
+├─ index.html
+├─ jsconfig.json
+├─ package-lock.json
+├─ package.json
+├─ public
+│  └─ favicon.ico
+├─ src
+│  ├─ App.vue
+│  ├─ assets
+│  │  ├─ base.css
+│  │  ├─ icons
+│  │  │  ├─ +.svg
+│  │  │  ├─ Bathtub.svg
+│  │  │  ├─ Building.svg
+│  │  │  ├─ asscensor.svg
+│  │  │  ├─ cama.svg
+│  │  │  ├─ edifico.svg
+│  │  │  ├─ house.jpg
+│  │  │  ├─ maps.svg
+│  │  │  └─ planos.svg
+│  │  ├─ images
+│  │  │  ├─ github
+│  │  │  │  ├─ antonella.png
+│  │  │  │  ├─ eyad.png
+│  │  │  │  ├─ felipe.jpg
+│  │  │  │  ├─ hugo.jpg
+│  │  │  │  ├─ jorge.jpg
+│  │  │  │  ├─ julia.png
+│  │  │  │  └─ pablo.jpg
+│  │  │  ├─ house.jpg
+│  │  │  ├─ logo.png
+│  │  │  └─ portada.jpg
+│  │  ├─ logo.svg
+│  │  └─ main.css
+│  ├─ components
+│  │  ├─ AddIPropertiesButton.vue
+│  │  ├─ AssignZone.vue
+│  │  ├─ Button.vue
+│  │  ├─ Cards.vue
+│  │  ├─ CustomerVisitsTable.vue
+│  │  ├─ Login.vue
+│  │  ├─ PersonalForm.vue
+│  │  ├─ Popup.vue
+│  │  ├─ PopupPassword.vue
+│  │  ├─ PopupVist.vue
+│  │  ├─ PropertyList.vue
+│  │  ├─ SalesmenDashboard.vue
+│  │  ├─ SalesmenList.vue
+│  │  ├─ Salesmenformproperties.vue
+│  │  ├─ SearchBuy.vue
+│  │  ├─ VisitButton.vue
+│  │  └─ common
+│  │     ├─ Footer.vue
+│  │     └─ Header.vue
+│  ├─ core
+│  │  ├─ apis
+│  │  │  ├─ auth
+│  │  │  │  └─ spring
+│  │  │  │     └─ salesmen
+│  │  │  │        ├─ SalesmenRepository.js
+│  │  │  │        └─ SalesmenService.js
+│  │  │  ├─ property
+│  │  │  │  ├─ SearchRepository.js
+│  │  │  │  └─ SearchService.js
+│  │  │  └─ spring
+│  │  │     └─ auth
+│  │  │        ├─ AuthRepository.js
+│  │  │        └─ AuthService.js
+│  │  └─ models
+│  │     ├─ Credentials.js
+│  │     └─ Property.js
+│  ├─ main.js
+│  ├─ router
+│  │  └─ index.js
+│  ├─ stores
+│  │  ├─ auth.js
+│  │  ├─ personalFormStore.js
+│  │  ├─ salesmen.js
+│  │  ├─ salesmenRigester.js
+│  │  ├─ searchStore.js
+│  │  └─ userStore.js
+│  └─ views
+│     ├─ AdminView.vue
+│     ├─ HomeView.vue
+│     ├─ PublicView.vue
+│     ├─ SalesmenDashboardView.vue
+│     └─ UserView.vue
+├─ vite.config.js
+└─ vitest.config.js
+
+```
