@@ -37,7 +37,7 @@ This application aims to provide a friendly, intuitive, and efficient experience
 <img width="600" alt="Captura de pantalla 2024-10-15 a las 11 00 37" src="https://github.com/user-attachments/assets/7aff83ee-334c-4e49-a3e2-6c210debf69b">
 
 # View schedule an appointment
-<img width="1260" alt="Captura de pantalla 2024-10-15 a las 12 29 16" src="https://github.com/user-attachments/assets/fc489932-cdfd-4fd9-8d2b-34910ca68928">
+<img width="600" alt="Captura de pantalla 2024-10-15 a las 12 29 16" src="https://github.com/user-attachments/assets/fc489932-cdfd-4fd9-8d2b-34910ca68928">
 
 
 # View customer appointment
