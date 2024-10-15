@@ -32,8 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
             user.value.username = response.username;
             user.value.role = response.roles;
             user.value.isAuthenticated = true;
-            user.value.passwordChanged = response.passwordChanged;
-            
+            user.value.passwordChanged = response.passwordChanged
             return response;
         } catch (error) {
             console.error("Error en la autenticación:", error);
