@@ -22,7 +22,7 @@ This application aims to provide a friendly, intuitive, and efficient experience
 
 - JAVASCRIPT
 - HTML
-- TAILWIND
+- BOOSTRAP
 - VUE3
 - AXIOS
 - VITEST
