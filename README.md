@@ -31,10 +31,12 @@ This application aims to provide a friendly, intuitive, and efficient experience
 
 # View admin
 
-<img width="600" alt="Captura de pantalla 2024-10-15 a las 11 00 30" src="https://github.com/user-attachments/assets/a4d7dc8a-657c-4cb8-9ee3-88e9c0222b53">
+<img width="1271" alt="Captura de pantalla 2024-10-15 a las 14 12 12" src="https://github.com/user-attachments/assets/a0b372e7-1fb2-48d7-afd8-96efb839e500">
 
 # View selection comercial
-<img width="600" alt="Captura de pantalla 2024-10-15 a las 11 00 37" src="https://github.com/user-attachments/assets/7aff83ee-334c-4e49-a3e2-6c210debf69b">
+
+
+<img width="1270" alt="Captura de pantalla 2024-10-15 a las 14 10 50" src="https://github.com/user-attachments/assets/748320c7-c22f-4946-bbb4-ab552508d967">
 
 # View schedule an appointment
 <img width="600" alt="Captura de pantalla 2024-10-15 a las 12 29 16" src="https://github.com/user-attachments/assets/fc489932-cdfd-4fd9-8d2b-34910ca68928">
